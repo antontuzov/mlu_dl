@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #c4b5a4;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a89684;
+  }
+}
+
+@layer components {
+  .gradient-bg {
+    background: linear-gradient(135deg, #faf8f5 0%, #fff7ed 25%, #ffffff 50%, #eef2ff 75%, #fce7f3 100%);
+    background-size: 200% 200%;
+    animation: gradient 8s ease infinite;
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+
+  .hero-gradient {
+    background: linear-gradient(135deg, #faf8f5 0%, #ffedd5 30%, #ffffff 60%, #e0e7ff 100%);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, #f97316 0%, #6366f1 50%, #ec4899 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .card-hover {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .card-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-6 py-3 bg-primary-500 text-white font-semibold rounded-lg
+           shadow-lg shadow-primary-500/30 hover:bg-primary-600 hover:shadow-xl hover:shadow-primary-500/40
+           transition-all duration-300 active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-6 py-3 bg-white text-gray-800 font-semibold rounded-lg
+           border-2 border-gray-200 hover:border-accent-400 hover:text-accent-600
+           transition-all duration-300 active:scale-95;
+  }
+
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:text-accent-700
+           hover:bg-accent-50 transition-all duration-200 cursor-pointer;
+  }
+  .sidebar-link.active {
+    @apply text-accent-700 bg-accent-50 font-semibold;
+  }
+}
