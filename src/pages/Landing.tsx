@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import HeroSection from '../components/HeroSection'
 import ArticleCard from '../components/ArticleCard'
 import Footer from '../components/Footer'
+import { articleIcons } from '../components/icons/ArticleIcons'
 
 const BASE = 'https://mlu-explain.github.io/assets/thumbnails'
 
@@ -28,36 +29,54 @@ export default function Landing() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.4 }}
     >
       <HeroSection />
 
       {/* Articles Section */}
-      <section id="articles" className="bg-white py-24 px-6">
+      <section id="articles" className="bg-white py-28 px-6">
         <div className="max-w-7xl mx-auto">
           {/* Section divider */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
             className="text-center mb-16"
           >
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <div className="h-px w-16 bg-primary-400" />
+            <div className="flex items-center justify-center gap-5 mb-5">
+              <motion.div
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, ease: 'easeOut' }}
+                className="h-px w-20 bg-gradient-to-r from-transparent to-primary-400 origin-right"
+              />
               <h2 className="text-2xl md:text-3xl font-bold text-gray-800 tracking-tight">
                 Explore Published Articles
               </h2>
-              <div className="h-px w-16 bg-primary-400" />
+              <motion.div
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, ease: 'easeOut' }}
+                className="h-px w-20 bg-gradient-to-l from-transparent to-primary-400 origin-left"
+              />
             </div>
-            <p className="text-gray-500 max-w-lg mx-auto">
+            <p className="text-gray-500 max-w-lg mx-auto text-base">
               Dive into interactive visual essays covering core machine learning concepts
             </p>
           </motion.div>
 
           {/* Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-7">
             {articles.map((article, i) => (
-              <ArticleCard key={article.title} {...article} index={i} />
+              <ArticleCard
+                key={article.slug}
+                {...article}
+                icon={articleIcons[article.slug]}
+                index={i}
+              />
             ))}
           </div>
         </div>

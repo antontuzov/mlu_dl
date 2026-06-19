@@ -8,9 +8,10 @@ interface ArticleCardProps {
   image: string
   slug: string
   index: number
+  icon?: React.FC<{ size?: number; className?: string }>
 }
 
-export default function ArticleCard({ title, description, image, slug, index }: ArticleCardProps) {
+export default function ArticleCard({ title, description, image, slug, index, icon: Icon }: ArticleCardProps) {
   return (
     <motion.article
       initial={{ opacity: 0, y: 40 }}
@@ -20,38 +21,48 @@ export default function ArticleCard({ title, description, image, slug, index }: 
       className="group card-hover glass-card rounded-2xl overflow-hidden cursor-pointer"
     >
       {/* Thumbnail image */}
-      <div className="relative h-56 overflow-hidden bg-gray-100">
-        <motion.img
-          src={image}
-          alt={title}
-          loading="lazy"
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.4, ease: 'easeOut' }}
-          className="w-full h-full object-cover"
-        />
-        {/* Subtle gradient overlay at bottom for depth */}
-        <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black/10 to-transparent" />
-      </div>
+      <Link to={`/article/${slug}`} className="block">
+        <div className="relative h-52 overflow-hidden bg-gray-100">
+          <motion.img
+            src={image}
+            alt={title}
+            loading="lazy"
+            whileHover={{ scale: 1.06 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            className="w-full h-full object-cover"
+          />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+          {/* Icon badge */}
+          {Icon && (
+            <div className="absolute bottom-3 right-3 w-11 h-11 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-lg group-hover:bg-white/30 transition-colors">
+              <Icon size={24} className="text-white drop-shadow-md" />
+            </div>
+          )}
+        </div>
+      </Link>
 
       {/* Content */}
-      <div className="p-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-gray-800 mb-2 underline decoration-2 decoration-primary-400 underline-offset-4">
-          {title}
-        </h3>
-        <p className="text-gray-600 text-sm leading-relaxed mb-5 line-clamp-3">
+      <div className="p-5 pt-4">
+        <Link to={`/article/${slug}`}>
+          <h3 className="text-[13px] font-bold uppercase tracking-[0.06em] text-gray-800 mb-2 decoration-2 decoration-primary-400 underline underline-offset-[5px] hover:text-primary-700 transition-colors">
+            {title}
+          </h3>
+        </Link>
+        <p className="text-gray-500 text-sm leading-relaxed mb-5 line-clamp-2">
           {description}
         </p>
 
         <Link to={`/article/${slug}`}>
           <motion.span
-            whileHover={{ x: 4 }}
+            whileHover={{ x: 5 }}
             whileTap={{ scale: 0.97 }}
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-500 text-white text-sm font-semibold rounded-lg
-                       shadow-md shadow-primary-500/25 hover:bg-primary-600 hover:shadow-lg hover:shadow-primary-500/35
+                       shadow-md shadow-primary-500/25 hover:bg-primary-600 hover:shadow-lg hover:shadow-primary-500/40
                        transition-all duration-300"
           >
             Dive In
-            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
           </motion.span>
         </Link>
       </div>

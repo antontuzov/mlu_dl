@@ -51,10 +51,10 @@ const radarData = [
 ]
 
 const stats = [
-  { label: 'Total Articles', value: '14', change: '+2', up: true, icon: <BookOpen size={22} />, color: 'from-primary-500 to-orange-400' },
-  { label: 'Active Learners', value: '8.4K', change: '+12%', up: true, icon: <Users size={22} />, color: 'from-accent-500 to-indigo-400' },
-  { label: 'Avg. Completion', value: '73%', change: '+5%', up: true, icon: <TrendingUp size={22} />, color: 'from-emerald-500 to-teal-400' },
-  { label: 'Engagement Rate', value: '89%', change: '-2%', up: false, icon: <Activity size={22} />, color: 'from-pink-500 to-rose-400' },
+  { label: 'Total Articles', value: '14', change: '+2', up: true, icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="14" y2="11"/></svg>, color: 'from-primary-500 to-orange-400' },
+  { label: 'Active Learners', value: '8.4K', change: '+12%', up: true, icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>, color: 'from-accent-500 to-indigo-400' },
+  { label: 'Avg. Completion', value: '73%', change: '+5%', up: true, icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>, color: 'from-emerald-500 to-teal-400' },
+  { label: 'Engagement Rate', value: '89%', change: '-2%', up: false, icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>, color: 'from-pink-500 to-rose-400' },
 ]
 
 const recentArticles = [

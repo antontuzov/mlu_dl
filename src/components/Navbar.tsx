@@ -1,7 +1,22 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Bot, LayoutDashboard, Home } from 'lucide-react'
+import { Menu, X, LayoutDashboard, Home } from 'lucide-react'
+
+function LogoIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <rect x="2" y="6" width="20" height="14" rx="4" fill="white" fillOpacity="0.2" />
+      <circle cx="9" cy="13" r="2.5" fill="white" />
+      <circle cx="15" cy="13" r="2.5" fill="white" />
+      <circle cx="9.5" cy="12.5" r="1" fill="#1e1b4b" />
+      <circle cx="15.5" cy="12.5" r="1" fill="#1e1b4b" />
+      <rect x="9" y="16" width="6" height="1.5" rx="0.75" fill="white" fillOpacity="0.7" />
+      <line x1="12" y1="6" x2="12" y2="2" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="12" cy="1.5" r="1.5" fill="#f97316" />
+    </svg>
+  )
+}
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -25,78 +40,39 @@ export default function Navbar() {
       animate={{ y: 0 }}
       transition={{ type: 'spring', stiffness: 100, damping: 20 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? 'bg-white/80 backdrop-blur-xl shadow-lg shadow-black/5'
-          : 'bg-transparent'
+        scrolled ? 'bg-white/80 backdrop-blur-xl shadow-lg shadow-black/5' : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        {/* Logo */}
         <Link to="/" className="flex items-center gap-3 group">
-          <motion.div
-            whileHover={{ rotate: 15, scale: 1.1 }}
-            transition={{ type: 'spring', stiffness: 300 }}
-            className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center shadow-lg shadow-primary-500/30"
-          >
-            <Bot size={22} className="text-white" />
+          <motion.div whileHover={{ rotate: 12, scale: 1.1 }} transition={{ type: 'spring', stiffness: 300 }} className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center shadow-lg shadow-primary-500/30">
+            <LogoIcon />
           </motion.div>
           <span className="text-xl font-bold tracking-tight">
-            <span className="text-gray-800">MLU</span>
-            <span className="text-primary-500">-</span>
-            <span className="text-gray-600">Explain</span>
+            <span className="text-gray-800">MLU</span><span className="text-primary-500">-</span><span className="text-gray-600">Explain</span>
           </span>
         </Link>
 
-        {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-2">
           {navLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                location.pathname === link.to
-                  ? 'text-accent-700 bg-accent-50'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-              }`}
-            >
-              {link.icon}
-              {link.label}
+            <Link key={link.to} to={link.to} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${location.pathname === link.to ? 'text-accent-700 bg-accent-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}>
+              {link.icon} {link.label}
             </Link>
           ))}
         </div>
 
-        {/* Mobile toggle */}
-        <button
-          className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-          onClick={() => setMobileOpen(!mobileOpen)}
-        >
+        <button className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors" onClick={() => setMobileOpen(!mobileOpen)}>
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
-      {/* Mobile menu */}
       <AnimatePresence>
         {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100 overflow-hidden"
-          >
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="md:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100 overflow-hidden">
             <div className="px-6 py-4 space-y-2">
               {navLinks.map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  onClick={() => setMobileOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
-                    location.pathname === link.to
-                      ? 'text-accent-700 bg-accent-50'
-                      : 'text-gray-600 hover:bg-gray-50'
-                  }`}
-                >
-                  {link.icon}
-                  {link.label}
+                <Link key={link.to} to={link.to} onClick={() => setMobileOpen(false)} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${location.pathname === link.to ? 'text-accent-700 bg-accent-50' : 'text-gray-600 hover:bg-gray-50'}`}>
+                  {link.icon} {link.label}
                 </Link>
               ))}
             </div>
