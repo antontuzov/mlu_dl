@@ -12,6 +12,7 @@ import MathBlock from '../components/MathBlock'
 import InfoTooltip from '../components/InfoTooltip'
 import Footer from '../components/Footer'
 import { getChapter, type ContentBlock, type ArticleChapter } from '../data/articles'
+import { useLang } from '../context/LanguageContext'
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -101,6 +102,33 @@ function genSigmoidData() {
   })
 }
 
+function genHeatmapData(size: number, seed = 42) {
+  const rng = (s: number) => { let x = s; return () => { x = (x * 16807) % 2147483647; return x / 2147483647 } }
+  const r = rng(seed)
+  return Array.from({ length: size }, (_, row) =>
+    Array.from({ length: size }, (_, col) => {
+      const cx = size / 2, cy = size / 2
+      const dist = Math.sqrt((row - cy) ** 2 + (col - cx) ** 2) / (size / 2)
+      return +(Math.exp(-dist * 2) * 0.7 + r() * 0.3).toFixed(3)
+    })
+  )
+}
+
+function genAttentionData(size: number, seed = 7) {
+  const rng = (s: number) => { let x = s; return () => { x = (x * 16807) % 2147483647; return x / 2147483647 } }
+  const r = rng(seed)
+  const raw = Array.from({ length: size }, () =>
+    Array.from({ length: size }, () => r())
+  )
+  // softmax each row
+  return raw.map(row => {
+    const max = Math.max(...row)
+    const exps = row.map(v => Math.exp((v - max) * 3))
+    const sum = exps.reduce((a, b) => a + b, 0)
+    return exps.map(v => +(v / sum).toFixed(3))
+  })
+}
+
 /* ================================================================== */
 /*  ARTICLE PAGE                                                       */
 /* ================================================================== */
@@ -112,6 +140,7 @@ export default function ArticlePage() {
   const { all, mA, mB } = useBeeswarmData(threshold)
   const [progress, setProgress] = useState(0)
   const [tabIndex, setTabIndex] = useState(0)
+  const { t } = useLang()
 
   // Scroll to top on mount
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior }) }, [slug])
@@ -127,8 +156,8 @@ export default function ArticlePage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">Article Not Found</h1>
-          <Link to="/" className="text-accent-600 hover:underline">← Back to Home</Link>
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">{t('articleNotFound')}</h1>
+          <Link to="/" className="text-accent-600 hover:underline">{t('backToHome')}</Link>
         </div>
       </div>
     )
@@ -149,7 +178,7 @@ export default function ArticlePage() {
             <ArrowLeft size={18} /> MLU-EXPLAIN
           </Link>
           <Link to="/#articles" className="text-xs text-gray-500 hover:text-gray-700 transition-colors flex items-center gap-1">
-            <BookOpen size={14} /> All Articles
+            <BookOpen size={14} /> {t('allArticles')}
           </Link>
         </div>
       </div>
@@ -183,14 +212,14 @@ export default function ArticlePage() {
 
       {/* CONCLUSION */}
       <section className="max-w-2xl mx-auto px-6 pb-20">
-        <motion.h2 {...fade()} className="text-xl font-bold text-gray-900 mb-6 border-l-4 border-primary-500 pl-4">The End</motion.h2>
+        <motion.h2 {...fade()} className="text-xl font-bold text-gray-900 mb-6 border-l-4 border-primary-500 pl-4">{t('theEnd')}</motion.h2>
         <motion.p {...fade(0.1)} className="text-base leading-7 text-gray-800">{chapter.conclusion}</motion.p>
       </section>
 
       {/* REFERENCES */}
-      <section className="bg-gradient-to-br from-[#ffad97] to-[#ff8a6b] py-16 px-6">
+      <section className="bg-gradient-to-br from-[#6366f1] to-[#3b82f6] py-16 px-6">
         <div className="max-w-2xl mx-auto">
-          <motion.h3 {...fade()} className="text-3xl font-light text-white mb-8">References + Open Source</motion.h3>
+          <motion.h3 {...fade()} className="text-3xl font-light text-white mb-8">{t('referencesTitle')}</motion.h3>
           <div className="space-y-3">
             {chapter.references.map((ref, i) => (
               <motion.a key={i} href={ref.url} target="_blank" rel="noreferrer" initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.15 + i * 0.08 }} className="flex items-start gap-3 text-white/90 hover:text-white transition-colors group">
@@ -261,8 +290,9 @@ function ChartBlock({ block, index, threshold, setThreshold, all, mA, mB }: {
   all: { truth: number; prediction: number; group: string; prob: number; id: string }[]
   mA: { fpr: number; fnr: number; acc: number }; mB: { fpr: number; fnr: number; acc: number }
 }) {
+  const { t } = useLang()
   const dotColor = (d: { truth: number; prediction: number; group: string }) => {
-    if (d.group === 'A') return d.truth === d.prediction ? '#6366f1' : '#f97316'
+    if (d.group === 'A') return d.truth === d.prediction ? '#6366f1' : '#3b82f6'
     return d.truth === d.prediction ? '#10b981' : '#ec4899'
   }
 
@@ -275,7 +305,7 @@ function ChartBlock({ block, index, threshold, setThreshold, all, mA, mB }: {
       {block.chart === 'beeswarm' && block.interactive && (
         <>
           <div className="flex items-center gap-4 mb-5">
-            <label className="text-sm font-medium text-gray-700 whitespace-nowrap">Threshold</label>
+            <label className="text-sm font-medium text-gray-700 whitespace-nowrap">{t('threshold')}</label>
             <input type="range" min={0} max={1} step={0.01} value={threshold} onChange={(e) => setThreshold(+e.target.value)} className="flex-1" />
             <span className="text-sm font-mono font-semibold text-primary-600 w-12 text-right">{threshold.toFixed(2)}</span>
           </div>
@@ -298,15 +328,15 @@ function ChartBlock({ block, index, threshold, setThreshold, all, mA, mB }: {
               <XAxis dataKey="prob" type="number" domain={[0, 1]} tick={{ fontSize: 11, fill: '#94a3b8' }} />
               <YAxis dataKey="truth" type="number" domain={[-0.2, 1.2]} ticks={[0, 1]} tick={{ fontSize: 11, fill: '#94a3b8' }} tickFormatter={(v: number) => v === 0 ? 'Rejected' : 'Accepted'} />
               <Tooltip contentStyle={{ borderRadius: 10, border: '1px solid #e2e8f0', fontSize: 12 }} />
-              <ReferenceLine x={threshold} stroke="#f97316" strokeWidth={2} strokeDasharray="4 4" label={{ value: 'Threshold', position: 'top', fill: '#f97316', fontSize: 10 }} />
+              <ReferenceLine x={threshold} stroke="#3b82f6" strokeWidth={2} strokeDasharray="4 4" label={{ value: t('threshold'), position: 'top', fill: '#3b82f6', fontSize: 10 }} />
               <Scatter data={all}>{all.map((e, i) => <Cell key={i} fill={dotColor(e)} r={4} />)}</Scatter>
             </ScatterChart>
           </ResponsiveContainer>
           <div className="flex flex-wrap gap-3 justify-center mt-3 text-xs text-gray-500">
-            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-indigo-500" /> Correct (A)</span>
-            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-orange-500" /> Wrong (A)</span>
-            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Correct (B)</span>
-            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-pink-500" /> Wrong (B)</span>
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-indigo-500" /> {t('correctA')}</span>
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-blue-500" /> {t('wrongA')}</span>
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> {t('correctB')}</span>
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-pink-500" /> {t('wrongB')}</span>
           </div>
         </>
       )}
@@ -358,13 +388,13 @@ function ChartBlock({ block, index, threshold, setThreshold, all, mA, mB }: {
         <ResponsiveContainer width="100%" height={280}>
           <AreaChart data={genAreaData(40)} margin={{ top: 10, right: 20, bottom: 20, left: 10 }}>
             <defs>
-              <linearGradient id="gA" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#f97316" stopOpacity={0.3} /><stop offset="95%" stopColor="#f97316" stopOpacity={0} /></linearGradient>
+              <linearGradient id="gA" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} /><stop offset="95%" stopColor="#3b82f6" stopOpacity={0} /></linearGradient>
               <linearGradient id="gB" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} /><stop offset="95%" stopColor="#6366f1" stopOpacity={0} /></linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
             <XAxis dataKey="x" tick={{ fontSize: 11, fill: '#94a3b8' }} /><YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} />
             <Tooltip contentStyle={{ borderRadius: 10, border: '1px solid #e2e8f0', fontSize: 12 }} /><Legend />
-            <Area type="monotone" dataKey="train" stroke="#f97316" strokeWidth={2} fill="url(#gA)" name="Train" />
+            <Area type="monotone" dataKey="train" stroke="#3b82f6" strokeWidth={2} fill="url(#gA)" name="Train" />
             <Area type="monotone" dataKey="test" stroke="#6366f1" strokeWidth={2} fill="url(#gB)" name="Test" />
           </AreaChart>
         </ResponsiveContainer>
@@ -377,7 +407,7 @@ function ChartBlock({ block, index, threshold, setThreshold, all, mA, mB }: {
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
             <XAxis dataKey="x" tick={{ fontSize: 11, fill: '#94a3b8' }} /><YAxis domain={[0, 1]} tick={{ fontSize: 11, fill: '#94a3b8' }} />
             <Tooltip contentStyle={{ borderRadius: 10, border: '1px solid #e2e8f0', fontSize: 12 }} />
-            <Line type="monotone" dataKey="y" stroke="#f97316" strokeWidth={3} dot={false} name="σ(x)" />
+            <Line type="monotone" dataKey="y" stroke="#3b82f6" strokeWidth={3} dot={false} name="σ(x)" />
             <ReferenceLine y={0.5} stroke="#94a3b8" strokeDasharray="4 4" />
           </LineChart>
         </ResponsiveContainer>
@@ -401,10 +431,307 @@ function ChartBlock({ block, index, threshold, setThreshold, all, mA, mB }: {
         <div className="flex items-center justify-center py-10">
           <div className="text-center">
             <div className="text-5xl mb-3">{block.chart === 'tree' ? '🌳' : '🌲🌲🌲'}</div>
-            <p className="text-sm text-gray-400">Interactive {block.chart} visualization</p>
+            <p className="text-sm text-gray-400">{t('interactiveViz')} ({block.chart})</p>
           </div>
         </div>
       )}
+
+      {/* Heatmap — feature maps, attention matrices */}
+      {block.chart === 'heatmap' && (
+        <HeatmapViz title={block.title} interactive={!!block.interactive} />
+      )}
+
+      {/* Architecture diagrams */}
+      {block.chart === 'architecture' && (
+        <ArchitectureViz title={block.title} />
+      )}
     </motion.div>
+  )
+}
+
+/* ================================================================== */
+/*  Heatmap Visualization                                                */
+/* ================================================================== */
+
+function HeatmapViz({ title, interactive }: { title: string; interactive: boolean }) {
+  const { t } = useLang()
+  const [mode, setMode] = useState<'feature' | 'attention'>(title.toLowerCase().includes('attention') ? 'attention' : 'feature')
+  const size = mode === 'attention' ? 8 : 10
+  const data = useMemo(() => mode === 'attention' ? genAttentionData(size) : genHeatmapData(size), [mode, size])
+  const cellSize = 36
+  const gap = 3
+
+  const colorScale = (v: number) => {
+    if (mode === 'attention') {
+      const r = Math.round(99 + v * 156)
+      const g = Math.round(102 + v * 50)
+      const b = Math.round(241 - v * 140)
+      return `rgb(${r},${g},${b})`
+    }
+    const r = Math.round(59 + v * 100)
+    const g = Math.round(130 + v * 50)
+    const b = Math.round(246 - v * 50)
+    return `rgb(${r},${g},${b})`
+  }
+
+  return (
+    <div>
+      {interactive && (
+        <div className="flex gap-2 mb-4">
+          <button onClick={() => setMode('feature')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${mode === 'feature' ? 'bg-primary-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>{t('featureMap')}</button>
+          <button onClick={() => setMode('attention')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${mode === 'attention' ? 'bg-accent-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>{t('attentionMatrix')}</button>
+        </div>
+      )}
+      <div className="flex justify-center overflow-x-auto">
+        <svg width={size * (cellSize + gap) + gap} height={size * (cellSize + gap) + gap}>
+          {data.map((row, ri) =>
+            row.map((val, ci) => (
+              <motion.rect
+                key={`${ri}-${ci}`}
+                x={ci * (cellSize + gap) + gap}
+                y={ri * (cellSize + gap) + gap}
+                width={cellSize}
+                height={cellSize}
+                rx={4}
+                fill={colorScale(val)}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: (ri + ci) * 0.015, duration: 0.3, type: 'spring' }}
+              />
+            ))
+          )}
+          {mode === 'attention' && Array.from({ length: size }).map((_, i) => (
+            <g key={`label-${i}`}>
+              <text x={i * (cellSize + gap) + gap + cellSize / 2} y={-4} textAnchor="middle" fontSize="9" fill="#94a3b8">T{i + 1}</text>
+              <text x={-6} y={i * (cellSize + gap) + gap + cellSize / 2 + 3} textAnchor="end" fontSize="9" fill="#94a3b8">T{i + 1}</text>
+            </g>
+          ))}
+        </svg>
+      </div>
+      <div className="flex items-center justify-center gap-2 mt-3">
+        <span className="text-xs text-gray-400">{t('low')}</span>
+        <div className="w-32 h-2 rounded-full" style={{ background: `linear-gradient(to right, ${colorScale(0.05)}, ${colorScale(0.5)}, ${colorScale(1)})` }} />
+        <span className="text-xs text-gray-400">{t('high')}</span>
+      </div>
+    </div>
+  )
+}
+
+/* ================================================================== */
+/*  Architecture Diagram Visualization                                  */
+/* ================================================================== */
+
+function ArchitectureViz({ title }: { title: string }) {
+  const t = title.toLowerCase()
+
+  // CNN architecture
+  if (t.includes('cnn') || t.includes('lenet') || t.includes('conv')) {
+    const layers = [
+      { label: 'Input\n28×28', w: 60, h: 60, color: '#e5e7eb', x: 20 },
+      { label: 'Conv\n6×5×5', w: 50, h: 50, color: '#c7d2fe', x: 110 },
+      { label: 'Pool\n14×14', w: 36, h: 36, color: '#a5b4fc', x: 195 },
+      { label: 'Conv\n16×5×5', w: 44, h: 44, color: '#818cf8', x: 270 },
+      { label: 'Pool\n7×7', w: 28, h: 28, color: '#6366f1', x: 350 },
+      { label: 'FC\n120', w: 20, h: 55, color: '#3b82f6', x: 415 },
+      { label: 'FC\n84', w: 16, h: 45, color: '#60a5fa', x: 468 },
+      { label: 'Out\n10', w: 14, h: 30, color: '#10b981', x: 518 },
+    ]
+    return (
+      <div className="flex justify-center overflow-x-auto py-4">
+        <svg width="560" height="140" viewBox="0 0 560 140">
+          {layers.map((l, i) => (
+            <g key={i}>
+              <motion.rect x={l.x} y={70 - l.h / 2} width={l.w} height={l.h} rx={6} fill={l.color} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1, duration: 0.4 }} />
+              {i < layers.length - 1 && <motion.line x1={l.x + l.w} y1={70} x2={layers[i + 1].x} y2={70} stroke="#cbd5e1" strokeWidth={2} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.1 + 0.2 }} />}
+              <text x={l.x + l.w / 2} y={70 + l.h / 2 + 16} textAnchor="middle" fontSize="8" fill="#64748b">{l.label.split('\n')[0]}</text>
+              <text x={l.x + l.w / 2} y={70 + l.h / 2 + 26} textAnchor="middle" fontSize="7" fill="#94a3b8">{l.label.split('\n')[1]}</text>
+            </g>
+          ))}
+        </svg>
+      </div>
+    )
+  }
+
+  // RNN unrolled
+  if (t.includes('rnn') || t.includes('unrolled') || t.includes('recurrent')) {
+    const steps = [0, 1, 2, 3, 4]
+    return (
+      <div className="flex justify-center overflow-x-auto py-4">
+        <svg width="520" height="180" viewBox="0 0 520 180">
+          {steps.map((s, i) => {
+            const x = 40 + i * 100
+            return (
+              <g key={i}>
+                <motion.circle cx={x} cy={90} r={22} fill="#c7d2fe" stroke="#6366f1" strokeWidth={2} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: i * 0.12, type: 'spring' }} />
+                <text x={x} y={94} textAnchor="middle" fontSize="11" fontWeight="bold" fill="#4338ca">h{s}</text>
+                <line x1={x} y1={112} x2={x} y2={150} stroke="#94a3b8" strokeWidth={1.5} />
+                <text x={x} y={164} textAnchor="middle" fontSize="10" fill="#64748b">x{s}</text>
+                <line x1={x} y1={68} x2={x} y2={30} stroke="#94a3b8" strokeWidth={1.5} />
+                <text x={x} y={22} textAnchor="middle" fontSize="10" fill="#64748b">y{s}</text>
+                {i < steps.length - 1 && (
+                  <motion.path d={`M${x + 22} 90 L${x + 78} 90`} stroke="#6366f1" strokeWidth={2.5} strokeLinecap="round" markerEnd="url(#arrowRNN)" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ delay: i * 0.12 + 0.1, duration: 0.3 }} />
+                )}
+              </g>
+            )
+          })}
+          <defs><marker id="arrowRNN" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#6366f1" /></marker></defs>
+        </svg>
+      </div>
+    )
+  }
+
+  // GAN architecture
+  if (t.includes('gan') || t.includes('generative') || t.includes('adversarial')) {
+    return (
+      <div className="flex justify-center overflow-x-auto py-4">
+        <svg width="520" height="200" viewBox="0 0 520 200">
+          <motion.rect x={10} y={60} width={80} height={80} rx={12} fill="#fef3c7" stroke="#f59e0b" strokeWidth={2} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0 }} />
+          <text x={50} y={95} textAnchor="middle" fontSize="10" fontWeight="bold" fill="#92400e">Noise z</text>
+          <text x={50} y={110} textAnchor="middle" fontSize="8" fill="#b45309">~ N(0,I)</text>
+          <motion.path d="M90 100 L150 100" stroke="#3b82f6" strokeWidth={3} markerEnd="url(#arrowGAN)" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ delay: 0.2 }} />
+          <motion.rect x={150} y={55} width={100} height={90} rx={14} fill="#dbeafe" stroke="#3b82f6" strokeWidth={2.5} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.3, type: 'spring' }} />
+          <text x={200} y={95} textAnchor="middle" fontSize="14" fontWeight="bold" fill="#1e40af">Generator</text>
+          <text x={200} y={112} textAnchor="middle" fontSize="9" fill="#2563eb">G(z)</text>
+          <motion.path d="M250 100 L310 100" stroke="#3b82f6" strokeWidth={3} markerEnd="url(#arrowGAN)" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ delay: 0.5 }} />
+          <text x={280} y={90} textAnchor="middle" fontSize="8" fill="#94a3b8">fake</text>
+          <motion.rect x={10} y={10} width={80} height={40} rx={8} fill="#dbeafe" stroke="#3b82f6" strokeWidth={1.5} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} />
+          <text x={50} y={34} textAnchor="middle" fontSize="10" fontWeight="bold" fill="#1e40af">Real Data</text>
+          <motion.path d="M90 30 L310 30 L310 80" stroke="#3b82f6" strokeWidth={2} strokeDasharray="4 3" markerEnd="url(#arrowGAN2)" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ delay: 0.4 }} />
+          <text x={200} y={22} textAnchor="middle" fontSize="8" fill="#94a3b8">real</text>
+          <motion.rect x={310} y={55} width={120} height={90} rx={14} fill="#c7d2fe" stroke="#6366f1" strokeWidth={2.5} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.6, type: 'spring' }} />
+          <text x={370} y={95} textAnchor="middle" fontSize="13" fontWeight="bold" fill="#4338ca">Discriminator</text>
+          <text x={370} y={112} textAnchor="middle" fontSize="9" fill="#6366f1">D(x)</text>
+          <motion.path d="M430 100 L480 100" stroke="#6366f1" strokeWidth={3} markerEnd="url(#arrowGAN2)" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ delay: 0.8 }} />
+          <motion.rect x={480} y={80} width={35} height={40} rx={8} fill="#d1fae5" stroke="#10b981" strokeWidth={2} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }} />
+          <text x={497} y={104} textAnchor="middle" fontSize="11" fontWeight="bold" fill="#065f46">0/1</text>
+          <defs>
+            <marker id="arrowGAN" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#3b82f6" /></marker>
+            <marker id="arrowGAN2" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#6366f1" /></marker>
+          </defs>
+        </svg>
+      </div>
+    )
+  }
+
+  // Transformer architecture
+  if (t.includes('transformer') || t.includes('encoder-decoder') || t.includes('attention is all')) {
+    return (
+      <div className="flex justify-center overflow-x-auto py-4">
+        <svg width="480" height="280" viewBox="0 0 480 280">
+          {/* Encoder */}
+          <motion.rect x={20} y={20} width={180} height={240} rx={16} fill="#fef3c7" fillOpacity={0.3} stroke="#f59e0b" strokeWidth={1.5} strokeDasharray="6 3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} />
+          <text x={110} y={42} textAnchor="middle" fontSize="11" fontWeight="bold" fill="#92400e">ENCODER ×N</text>
+          <motion.rect x={40} y={56} width={140} height={40} rx={8} fill="#dbeafe" stroke="#3b82f6" strokeWidth={1.5} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} />
+          <text x={110} y={80} textAnchor="middle" fontSize="9" fontWeight="bold" fill="#1e40af">Multi-Head Attention</text>
+          <motion.rect x={40} y={110} width={140} height={25} rx={6} fill="#e0e7ff" stroke="#818cf8" strokeWidth={1} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} />
+          <text x={110} y={126} textAnchor="middle" fontSize="8" fill="#4338ca">Add & LayerNorm</text>
+          <motion.rect x={40} y={148} width={140} height={40} rx={8} fill="#dbeafe" stroke="#3b82f6" strokeWidth={1.5} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} />
+          <text x={110} y={172} textAnchor="middle" fontSize="9" fontWeight="bold" fill="#1e40af">Feed Forward</text>
+          <motion.rect x={40} y={202} width={140} height={25} rx={6} fill="#e0e7ff" stroke="#818cf8" strokeWidth={1} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} />
+          <text x={110} y={218} textAnchor="middle" fontSize="8" fill="#4338ca">Add & LayerNorm</text>
+          {/* Decoder */}
+          <motion.rect x={280} y={20} width={180} height={240} rx={16} fill="#ede9fe" fillOpacity={0.3} stroke="#8b5cf6" strokeWidth={1.5} strokeDasharray="6 3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} />
+          <text x={370} y={42} textAnchor="middle" fontSize="11" fontWeight="bold" fill="#5b21b6">DECODER ×N</text>
+          <motion.rect x={300} y={56} width={140} height={35} rx={8} fill="#ddd6fe" stroke="#8b5cf6" strokeWidth={1.5} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} />
+          <text x={370} y={78} textAnchor="middle" fontSize="9" fontWeight="bold" fill="#6d28d9">Masked Attention</text>
+          <motion.rect x={300} y={100} width={140} height={35} rx={8} fill="#c7d2fe" stroke="#6366f1" strokeWidth={1.5} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} />
+          <text x={370} y={122} textAnchor="middle" fontSize="9" fontWeight="bold" fill="#4338ca">Cross Attention</text>
+          <motion.rect x={300} y={148} width={140} height={35} rx={8} fill="#ddd6fe" stroke="#8b5cf6" strokeWidth={1.5} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} />
+          <text x={370} y={170} textAnchor="middle" fontSize="9" fontWeight="bold" fill="#6d28d9">Feed Forward</text>
+          <motion.rect x={300} y={196} width={140} height={35} rx={8} fill="#a5f3fc" stroke="#06b6d4" strokeWidth={1.5} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} />
+          <text x={370} y={218} textAnchor="middle" fontSize="9" fontWeight="bold" fill="#0e7490">Linear + Softmax</text>
+          {/* Arrow between encoder and decoder */}
+          <motion.path d="M160 100 C220 80 260 90 300 115" stroke="#94a3b8" strokeWidth={2} fill="none" strokeDasharray="4 3" markerEnd="url(#arrowTrans)" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ delay: 0.6 }} />
+          <defs><marker id="arrowTrans" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#94a3b8" /></marker></defs>
+        </svg>
+      </div>
+    )
+  }
+
+  // Autoencoder
+  if (t.includes('autoencoder') || t.includes('encoder') || t.includes('vae')) {
+    const layers = [
+      { label: 'Input\n784', w: 14, h: 80, color: '#e5e7eb' },
+      { label: 'Enc 1\n512', w: 14, h: 65, color: '#c7d2fe' },
+      { label: 'Enc 2\n256', w: 14, h: 50, color: '#a5b4fc' },
+      { label: 'Latent\nz', w: 14, h: 24, color: '#3b82f6' },
+      { label: 'Dec 1\n256', w: 14, h: 50, color: '#a5b4fc' },
+      { label: 'Dec 2\n512', w: 14, h: 65, color: '#c7d2fe' },
+      { label: 'Output\n784', w: 14, h: 80, color: '#d1fae5' },
+    ]
+    return (
+      <div className="flex justify-center overflow-x-auto py-4">
+        <svg width="480" height="160" viewBox="0 0 480 160">
+          {layers.map((l, i) => {
+            const x = 30 + i * 66
+            return (
+              <g key={i}>
+                <motion.rect x={x} y={80 - l.h / 2} width={l.w} height={l.h} rx={4} fill={l.color} stroke="#94a3b8" strokeWidth={1} initial={{ scaleY: 0 }} animate={{ scaleY: 1 }} transition={{ delay: i * 0.08, duration: 0.4, type: 'spring' }} style={{ transformOrigin: `${x + l.w / 2}px 80px` }} />
+                {i < layers.length - 1 && <line x1={x + l.w} y1={80} x2={x + 66} y2={80} stroke="#cbd5e1" strokeWidth={1.5} />}
+                <text x={x + l.w / 2} y={80 + l.h / 2 + 14} textAnchor="middle" fontSize="7" fill="#64748b">{l.label.split('\n')[0]}</text>
+                <text x={x + l.w / 2} y={80 + l.h / 2 + 24} textAnchor="middle" fontSize="7" fill="#94a3b8">{l.label.split('\n')[1]}</text>
+              </g>
+            )
+          })}
+          <text x={30 + 3 * 66 + 7} y={26} textAnchor="middle" fontSize="9" fontWeight="bold" fill="#3b82f6">Bottleneck</text>
+          <line x1={30 + 3 * 66 + 7} y1={30} x2={30 + 3 * 66 + 7} y2={68} stroke="#3b82f6" strokeWidth={1} strokeDasharray="3 2" />
+        </svg>
+      </div>
+    )
+  }
+
+  // Transfer Learning
+  if (t.includes('transfer') || t.includes('pretrain') || t.includes('fine-tune')) {
+    return (
+      <div className="flex justify-center overflow-x-auto py-4">
+        <svg width="460" height="180" viewBox="0 0 460 180">
+          <motion.rect x={10} y={10} width={130} height={160} rx={14} fill="#fef3c7" stroke="#f59e0b" strokeWidth={2} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0 }} />
+          <text x={75} y={35} textAnchor="middle" fontSize="10" fontWeight="bold" fill="#92400e">Source Task</text>
+          <text x={75} y={52} textAnchor="middle" fontSize="8" fill="#b45309">ImageNet / Wikipedia</text>
+          {[80, 100, 120].map((y, i) => (
+            <motion.rect key={i} x={30} y={y} width={90} height={14} rx={4} fill={`rgba(59,130,246,${0.3 + i * 0.2})`} initial={{ width: 0 }} animate={{ width: 90 }} transition={{ delay: 0.2 + i * 0.1 }} />
+          ))}
+          <text x={75} y={155} textAnchor="middle" fontSize="8" fill="#92400e">Pretrained Weights</text>
+          <motion.path d="M140 90 L190 90" stroke="#3b82f6" strokeWidth={3} markerEnd="url(#arrowTL)" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ delay: 0.5 }} />
+          <text x={165} y={80} textAnchor="middle" fontSize="8" fontWeight="bold" fill="#3b82f6">Transfer</text>
+          <motion.rect x={190} y={10} width={130} height={160} rx={14} fill="#ede9fe" stroke="#8b5cf6" strokeWidth={2} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} />
+          <text x={255} y={35} textAnchor="middle" fontSize="10" fontWeight="bold" fill="#5b21b6">Target Task</text>
+          <text x={255} y={52} textAnchor="middle" fontSize="8" fill="#7c3aed">Your Dataset</text>
+          {[80, 100].map((y, i) => (
+            <motion.rect key={i} x={210} y={y} width={90} height={14} rx={4} fill={`rgba(139,92,246,${0.3 + i * 0.2})`} initial={{ width: 0 }} animate={{ width: 90 }} transition={{ delay: 0.7 + i * 0.1 }} />
+          ))}
+          <motion.rect x={210} y={120} width={90} height={14} rx={4} fill="#10b981" initial={{ width: 0 }} animate={{ width: 90 }} transition={{ delay: 0.9 }} />
+          <text x={255} y={130} textAnchor="middle" fontSize="7" fill="white" fontWeight="bold">New Head</text>
+          <text x={255} y={155} textAnchor="middle" fontSize="8" fill="#5b21b6">Fine-tuned Weights</text>
+          <motion.path d="M320 90 L370 90" stroke="#10b981" strokeWidth={3} markerEnd="url(#arrowTL2)" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ delay: 1 }} />
+          <motion.rect x={370} y={60} width={80} height={60} rx={12} fill="#d1fae5" stroke="#10b981" strokeWidth={2} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 1.1, type: 'spring' }} />
+          <text x={410} y={88} textAnchor="middle" fontSize="10" fontWeight="bold" fill="#065f46">Deploy</text>
+          <text x={410} y={102} textAnchor="middle" fontSize="8" fill="#047857">✓</text>
+          <defs>
+            <marker id="arrowTL" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#3b82f6" /></marker>
+            <marker id="arrowTL2" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#10b981" /></marker>
+          </defs>
+        </svg>
+      </div>
+    )
+  }
+
+  // Default generic architecture
+  return (
+    <div className="flex items-center justify-center py-10">
+      <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="text-center">
+        <div className="flex items-center justify-center gap-3 mb-4">
+          {['Input', 'Hidden 1', 'Hidden 2', 'Output'].map((label, i) => (
+            <div key={label} className="flex items-center gap-3">
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: i * 0.15, type: 'spring' }} className={`px-4 py-3 rounded-xl text-xs font-bold text-white ${i === 0 ? 'bg-gray-400' : i === 3 ? 'bg-emerald-500' : 'bg-indigo-400'}`}>
+                {label}
+              </motion.div>
+              {i < 3 && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.15 + 0.1 }} className="text-gray-300">→</motion.span>}
+            </div>
+          ))}
+        </div>
+        <p className="text-sm text-gray-400">{title}</p>
+      </motion.div>
+    </div>
   )
 }

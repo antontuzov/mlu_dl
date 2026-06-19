@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, LayoutDashboard, Home } from 'lucide-react'
+import { Menu, X, Home } from 'lucide-react'
+import { useLang } from '../context/LanguageContext'
 
 function LogoIcon() {
   return (
@@ -13,7 +14,7 @@ function LogoIcon() {
       <circle cx="15.5" cy="12.5" r="1" fill="#1e1b4b" />
       <rect x="9" y="16" width="6" height="1.5" rx="0.75" fill="white" fillOpacity="0.7" />
       <line x1="12" y1="6" x2="12" y2="2" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-      <circle cx="12" cy="1.5" r="1.5" fill="#f97316" />
+      <circle cx="12" cy="1.5" r="1.5" fill="#3b82f6" />
     </svg>
   )
 }
@@ -22,6 +23,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const location = useLocation()
+  const { lang, toggle, t } = useLang()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -30,8 +32,7 @@ export default function Navbar() {
   }, [])
 
   const navLinks = [
-    { to: '/', label: 'Home', icon: <Home size={18} /> },
-    { to: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
+    { to: '/', label: t('home'), icon: <Home size={18} /> },
   ]
 
   return (
@@ -59,11 +60,23 @@ export default function Navbar() {
               {link.icon} {link.label}
             </Link>
           ))}
+          {/* Language toggle */}
+          <button onClick={toggle} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:bg-gray-100 border border-gray-200">
+            <span className={lang === 'en' ? 'text-primary-600' : 'text-gray-400'}>EN</span>
+            <span className="text-gray-300">|</span>
+            <span className={lang === 'ru' ? 'text-primary-600' : 'text-gray-400'}>RU</span>
+          </button>
         </div>
 
-        <button className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors" onClick={() => setMobileOpen(!mobileOpen)}>
-          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="flex md:hidden items-center gap-2">
+          <button onClick={toggle} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold border border-gray-200">
+            <span className={lang === 'en' ? 'text-primary-600' : 'text-gray-400'}>EN</span>
+            <span className={lang === 'ru' ? 'text-primary-600' : 'text-gray-400'}>RU</span>
+          </button>
+          <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors" onClick={() => setMobileOpen(!mobileOpen)}>
+            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       <AnimatePresence>

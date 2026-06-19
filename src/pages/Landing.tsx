@@ -1,88 +1,169 @@
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
+import { chapters } from '../data/articles'
 import HeroSection from '../components/HeroSection'
-import ArticleCard from '../components/ArticleCard'
 import Footer from '../components/Footer'
 import { articleIcons } from '../components/icons/ArticleIcons'
+import { ArrowRight } from 'lucide-react'
+import { useLang } from '../context/LanguageContext'
 
-const BASE = 'https://mlu-explain.github.io/assets/thumbnails'
+const BASE = 'https://mlu-explain.github.io/assets'
 
-const articles = [
-  { title: 'Neural Networks', slug: 'neural-networks', description: 'Learn about neural networks, the backbone of many popular algorithms today, such as ChatGPT, Stable-Diffusion, and many others.', image: `${BASE}/thumbnail-neural-networks.jpg` },
-  { title: 'Equality of Odds', slug: 'equality-of-odds', description: 'Explore equality of odds, a metric used to quantify unfairness and remove bias from machine learning models.', image: `${BASE}/thumbnail-equality-of-odds.jpg` },
-  { title: 'Logistic Regression', slug: 'logistic-regression', description: 'Learn how logistic regression can be used for binary classification in machine learning through an interactive example.', image: `${BASE}/thumbnail-logistic-regression.jpg` },
-  { title: 'Linear Regression', slug: 'linear-regression', description: 'Interactively learn about linear regression models as they are commonly used in the context of machine learning.', image: `${BASE}/thumbnail-linear-regression.jpg` },
-  { title: 'Reinforcement Learning', slug: 'reinforcement-learning', description: 'Learn about Reinforcement Learning (RL) and the exploration-exploitation dilemma with this interactive article.', image: `${BASE}/thumbnail-reinforcement-learning.jpg` },
-  { title: 'ROC & AUC', slug: 'roc-auc', description: 'A visual explanation of the ROC curve, how it works with a live interactive example, and how it relates to Area Under The Curve.', image: `${BASE}/thumbnail-roc-auc.jpg` },
-  { title: 'Cross-Validation', slug: 'cross-validation', description: 'K-Fold Cross-Validation: a resampling technique to help evaluate estimates of test error rates compared to a simple validation set.', image: `${BASE}/thumbnail-cross-validation.jpg` },
-  { title: 'Train, Test, and Validation Sets', slug: 'train-test-validation', description: 'Learn why it is best practice to split your data into training, testing, and validation sets, and explore the utility of each.', image: `${BASE}/thumbnail-train-test-validation.jpg` },
-  { title: 'Precision & Recall', slug: 'precision-recall', description: 'When evaluating classification models, accuracy is often a poor metric. Learn about Precision, Recall, F1-score and Confusion Matrices.', image: `${BASE}/thumbnail-precision-recall.jpg` },
-  { title: 'Random Forest', slug: 'random-forest', description: 'Learn how majority vote and well-placed randomness can extend the decision tree to one of the most widely-used algorithms.', image: `${BASE}/thumbnail-random-forest.jpg` },
-  { title: 'Decision Trees', slug: 'decision-trees', description: 'Explore one of ML\'s most popular algorithms: learn how trees make splits, Entropy, Information Gain, and why going too deep is problematic.', image: `${BASE}/thumbnail-decision-tree.jpg` },
-  { title: 'Bias Variance Tradeoff', slug: 'bias-variance', description: 'Understand the tradeoff between under- and over-fitting models, how it relates to bias and variance, and explore interactive examples.', image: `${BASE}/thumbnail-bias-variance.jpg` },
-  { title: 'Double Descent: Visual Intro', slug: 'double-descent', description: 'Meet the double descent phenomenon: what it is, how it relates to the bias-variance tradeoff, the interpolation regime, and a theory behind it.', image: `${BASE}/thumbnail-double-descent.jpg` },
-  { title: 'Double Descent: Mathematical', slug: 'double-descent-2', description: 'Deepen your understanding of double descent. Builds on the cubic spline example, describing in mathematical detail what is happening.', image: `${BASE}/thumbnail-double-descent2.jpg` },
-]
+const cardVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.04, duration: 0.5, ease: 'easeOut' },
+  }),
+}
 
 export default function Landing() {
+  const { t } = useLang()
+  const mlArticles = chapters.slice(0, 14)
+  const dlArticles = chapters.slice(14)
+
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.4 }}
-    >
+    <div className="min-h-screen">
       <HeroSection />
 
-      {/* Articles Section */}
-      <section id="articles" className="bg-white py-28 px-6">
+      <section id="articles" className="relative py-20 px-6 bg-white">
         <div className="max-w-7xl mx-auto">
-          {/* Section divider */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-16"
-          >
-            <div className="flex items-center justify-center gap-5 mb-5">
-              <motion.div
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, ease: 'easeOut' }}
-                className="h-px w-20 bg-gradient-to-r from-transparent to-primary-400 origin-right"
-              />
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-800 tracking-tight">
-                Explore Published Articles
-              </h2>
-              <motion.div
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, ease: 'easeOut' }}
-                className="h-px w-20 bg-gradient-to-l from-transparent to-primary-400 origin-left"
-              />
-            </div>
-            <p className="text-gray-500 max-w-lg mx-auto text-base">
-              Dive into interactive visual essays covering core machine learning concepts
-            </p>
+          {/* Section header */}
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">{t('explorePublished')}</h2>
+            <p className="text-lg text-gray-500 max-w-xl mx-auto">{t('explorePublishedDesc')}</p>
+            <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} transition={{ delay: 0.2 }} className="h-1 w-24 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full mx-auto mt-6" />
           </motion.div>
 
-          {/* Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-7">
-            {articles.map((article, i) => (
-              <ArticleCard
-                key={article.slug}
-                {...article}
-                icon={articleIcons[article.slug]}
-                index={i}
-              />
-            ))}
+          {/* ML Fundamentals label */}
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="mb-8">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="h-px flex-1 bg-gradient-to-r from-primary-400 to-transparent" />
+              <h3 className="text-xl font-bold text-primary-600">{t('mlFundamentals')}</h3>
+              <div className="h-px flex-1 bg-gradient-to-l from-primary-400 to-transparent" />
+            </div>
+          </motion.div>
+
+          {/* ML Article grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            {mlArticles.map((article, i) => {
+              const Icon = articleIcons[article.slug]
+              return (
+                <motion.div
+                  key={article.slug}
+                  custom={i}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: '-50px' }}
+                  variants={cardVariants}
+                >
+                  <Link to={`/article/${article.slug}`} className="block group card-hover">
+                    <div className="relative rounded-2xl overflow-hidden shadow-md border border-gray-100">
+                      {/* Image */}
+                      <div className="relative h-48 overflow-hidden">
+                        <img
+                          src={article.thumbnail}
+                          alt={article.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-5">
+                        <div className="flex items-center gap-3 mb-3">
+                          {Icon && (
+                            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center flex-shrink-0 shadow-sm">
+                              <Icon size={18} className="text-white" />
+                            </div>
+                          )}
+                          <span className="text-xs font-semibold text-primary-600 uppercase tracking-wider">
+                            {article.authors}
+                          </span>
+                        </div>
+                        <h3 className="text-lg font-bold text-gray-800 group-hover:text-accent-700 transition-colors leading-tight mb-2">
+                          {article.title}
+                        </h3>
+                        <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">{article.subtitle}</p>
+                        <div className="mt-4 flex items-center gap-2 text-sm font-semibold text-primary-600 group-hover:text-accent-600 transition-colors">
+                          <span>{t('diveIn')}</span>
+                          <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              )
+            })}
+          </div>
+
+          {/* Deep Learning section header */}
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16 mt-24">
+            <div className="flex items-center justify-center gap-5 mb-5">
+              <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} className="h-px w-20 bg-gradient-to-r from-transparent to-accent-400 origin-right" />
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-800">{t('deepLearning')}</h2>
+              <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} className="h-px w-20 bg-gradient-to-l from-transparent to-accent-400 origin-left" />
+            </div>
+            <p className="text-gray-500 max-w-xl mx-auto">{t('deepLearningDesc')}</p>
+          </motion.div>
+
+          {/* DL Article grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {dlArticles.map((article, i) => {
+              const Icon = articleIcons[article.slug]
+              return (
+                <motion.div
+                  key={article.slug}
+                  custom={i}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: '-50px' }}
+                  variants={cardVariants}
+                >
+                  <Link to={`/article/${article.slug}`} className="block group card-hover">
+                    <div className="relative rounded-2xl overflow-hidden shadow-md border border-gray-100">
+                      <div className="relative h-48 overflow-hidden">
+                        <img
+                          src={article.thumbnail}
+                          alt={article.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                      </div>
+
+                      <div className="p-5">
+                        <div className="flex items-center gap-3 mb-3">
+                          {Icon && (
+                            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center flex-shrink-0 shadow-sm">
+                              <Icon size={18} className="text-white" />
+                            </div>
+                          )}
+                          <span className="text-xs font-semibold text-primary-600 uppercase tracking-wider">
+                            {article.authors}
+                          </span>
+                        </div>
+                        <h3 className="text-lg font-bold text-gray-800 group-hover:text-accent-700 transition-colors leading-tight mb-2">
+                          {article.title}
+                        </h3>
+                        <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">{article.subtitle}</p>
+                        <div className="mt-4 flex items-center gap-2 text-sm font-semibold text-primary-600 group-hover:text-accent-600 transition-colors">
+                          <span>{t('diveIn')}</span>
+                          <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              )
+            })}
           </div>
         </div>
       </section>
 
       <Footer />
-    </motion.div>
+    </div>
   )
 }

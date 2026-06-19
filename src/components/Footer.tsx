@@ -1,6 +1,9 @@
 import { Bot, Github, Twitter, Heart } from 'lucide-react'
+import { useLang } from '../context/LanguageContext'
 
 export default function Footer() {
+  const { t } = useLang()
+
   return (
     <footer className="bg-gray-50 border-t border-gray-100 py-12 px-6">
       <div className="max-w-7xl mx-auto">
@@ -25,7 +28,7 @@ export default function Footer() {
 
           {/* Copyright */}
           <p className="text-sm text-gray-500 flex items-center gap-1">
-            Made with <Heart size={14} className="text-red-400 fill-red-400" /> by MLU Team
+            {t('madeWith')} <Heart size={14} className="text-red-400 fill-red-400" /> {t('byTeam')}
           </p>
         </div>
       </div>

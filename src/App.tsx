@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import Landing from './pages/Landing'
-import Dashboard from './pages/Dashboard'
 import ArticlePage from './pages/ArticlePage'
 import Navbar from './components/Navbar'
+import { LanguageProvider } from './context/LanguageContext'
 
 function AppRoutes() {
   const location = useLocation()
@@ -15,7 +15,6 @@ function AppRoutes() {
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Landing />} />
-          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/article/:slug" element={<ArticlePage />} />
         </Routes>
       </AnimatePresence>
@@ -25,9 +24,11 @@ function AppRoutes() {
 
 function App() {
   return (
-    <Router>
-      <AppRoutes />
-    </Router>
+    <LanguageProvider>
+      <Router>
+        <AppRoutes />
+      </Router>
+    </LanguageProvider>
   )
 }
 

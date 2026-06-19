@@ -26,17 +26,17 @@
     background: #f1f1f1;
   }
   ::-webkit-scrollbar-thumb {
-    background: #c4b5a4;
+    background: #93c5fd;
     border-radius: 4px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #a89684;
+    background: #60a5fa;
   }
 }
 
 @layer components {
   .gradient-bg {
-    background: linear-gradient(135deg, #faf8f5 0%, #fff7ed 25%, #ffffff 50%, #eef2ff 75%, #fce7f3 100%);
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 25%, #ffffff 50%, #eef2ff 75%, #ede9fe 100%);
     background-size: 200% 200%;
     animation: gradient 8s ease infinite;
   }
@@ -48,11 +48,11 @@
   }
 
   .hero-gradient {
-    background: linear-gradient(135deg, #faf8f5 0%, #ffedd5 30%, #ffffff 60%, #e0e7ff 100%);
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 30%, #ffffff 60%, #e0e7ff 100%);
   }
 
   .text-gradient {
-    background: linear-gradient(135deg, #f97316 0%, #6366f1 50%, #ec4899 100%);
+    background: linear-gradient(135deg, #3b82f6 0%, #6366f1 50%, #8b5cf6 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -93,7 +93,7 @@ input[type='range'] {
   appearance: none;
   height: 6px;
   border-radius: 9999px;
-  background: linear-gradient(to right, #f97316, #6366f1);
+  background: linear-gradient(to right, #3b82f6, #6366f1);
   outline: none;
 }
 input[type='range']::-webkit-slider-thumb {
@@ -103,21 +103,21 @@ input[type='range']::-webkit-slider-thumb {
   height: 22px;
   border-radius: 50%;
   background: white;
-  border: 3px solid #f97316;
+  border: 3px solid #3b82f6;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 input[type='range']::-webkit-slider-thumb:hover {
   transform: scale(1.15);
-  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 input[type='range']::-moz-range-thumb {
   width: 22px;
   height: 22px;
   border-radius: 50%;
   background: white;
-  border: 3px solid #f97316;
+  border: 3px solid #3b82f6;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
