@@ -1,14 +1,16 @@
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 interface ArticleCardProps {
   title: string
   description: string
   image: string
+  slug: string
   index: number
 }
 
-export default function ArticleCard({ title, description, image, index }: ArticleCardProps) {
+export default function ArticleCard({ title, description, image, slug, index }: ArticleCardProps) {
   return (
     <motion.article
       initial={{ opacity: 0, y: 40 }}
@@ -40,16 +42,18 @@ export default function ArticleCard({ title, description, image, index }: Articl
           {description}
         </p>
 
-        <motion.button
-          whileHover={{ x: 4 }}
-          whileTap={{ scale: 0.97 }}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-500 text-white text-sm font-semibold rounded-lg
-                     shadow-md shadow-primary-500/25 hover:bg-primary-600 hover:shadow-lg hover:shadow-primary-500/35
-                     transition-all duration-300"
-        >
-          Dive In
-          <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-        </motion.button>
+        <Link to={`/article/${slug}`}>
+          <motion.span
+            whileHover={{ x: 4 }}
+            whileTap={{ scale: 0.97 }}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-500 text-white text-sm font-semibold rounded-lg
+                       shadow-md shadow-primary-500/25 hover:bg-primary-600 hover:shadow-lg hover:shadow-primary-500/35
+                       transition-all duration-300"
+          >
+            Dive In
+            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+          </motion.span>
+        </Link>
       </div>
     </motion.article>
   )
