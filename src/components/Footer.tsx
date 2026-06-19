@@ -13,7 +13,7 @@ export default function Footer() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center">
               <Bot size={16} className="text-white" />
             </div>
-            <span className="font-bold text-gray-700">MLU-Explain</span>
+            <span className="font-bold text-gray-700">{t('appName')}</span>
           </div>
 
           {/* Social links */}

@@ -140,7 +140,7 @@ export default function ArticlePage() {
   const { all, mA, mB } = useBeeswarmData(threshold)
   const [progress, setProgress] = useState(0)
   const [tabIndex, setTabIndex] = useState(0)
-  const { t } = useLang()
+  const { t, lang } = useLang()
 
   // Scroll to top on mount
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior }) }, [slug])
@@ -175,7 +175,7 @@ export default function ArticlePage() {
         <div className="absolute top-0 left-0 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 transition-all duration-150 ease-out" style={{ width: `${progress}%` }} />
         <div className="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-accent-600 hover:text-accent-700 font-bold tracking-wide text-sm transition-colors">
-            <ArrowLeft size={18} /> MLU-EXPLAIN
+            <ArrowLeft size={18} /> {t('appName').toUpperCase()}
           </Link>
           <Link to="/#articles" className="text-xs text-gray-500 hover:text-gray-700 transition-colors flex items-center gap-1">
             <BookOpen size={14} /> {t('allArticles')}
@@ -190,8 +190,8 @@ export default function ArticlePage() {
           <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-white/60 to-[#f1f3f3]" />
         </motion.div>
         <div className="relative max-w-2xl mx-auto text-center">
-          <motion.h1 {...fade()} className="text-4xl md:text-5xl font-light text-gray-900 mb-3 tracking-tight">{chapter.title}</motion.h1>
-          <motion.p {...fade(0.1)} className="text-base md:text-lg text-gray-700 mb-4">{chapter.subtitle}</motion.p>
+          <motion.h1 {...fade()} className="text-4xl md:text-5xl font-light text-gray-900 mb-3 tracking-tight">{lang === 'ru' ? chapter.titleRu : chapter.title}</motion.h1>
+          <motion.p {...fade(0.1)} className="text-base md:text-lg text-gray-700 mb-4">{lang === 'ru' ? chapter.subtitleRu : chapter.subtitle}</motion.p>
           <motion.p {...fade(0.2)} className="text-sm text-gray-500">{chapter.authors} · {chapter.date}</motion.p>
         </div>
       </header>
@@ -200,11 +200,11 @@ export default function ArticlePage() {
       {chapter.sections.map((section, si) => (
         <section key={si} className="max-w-4xl mx-auto px-6 pb-16">
           <motion.h2 {...fade()} className="text-xl font-bold text-gray-900 mb-6 border-l-4 border-primary-500 pl-4">
-            {section.heading}
+            {lang === 'ru' ? section.headingRu : section.heading}
           </motion.h2>
           <div className="space-y-6">
             {section.blocks.map((block, bi) => (
-              <BlockRenderer key={bi} block={block} index={bi} threshold={threshold} setThreshold={setThreshold} all={all} mA={mA} mB={mB} tabIndex={tabIndex} setTabIndex={setTabIndex} />
+              <BlockRenderer key={bi} block={block} index={bi} threshold={threshold} setThreshold={setThreshold} all={all} mA={mA} mB={mB} tabIndex={tabIndex} setTabIndex={setTabIndex} lang={lang} />
             ))}
           </div>
         </section>
@@ -213,7 +213,7 @@ export default function ArticlePage() {
       {/* CONCLUSION */}
       <section className="max-w-2xl mx-auto px-6 pb-20">
         <motion.h2 {...fade()} className="text-xl font-bold text-gray-900 mb-6 border-l-4 border-primary-500 pl-4">{t('theEnd')}</motion.h2>
-        <motion.p {...fade(0.1)} className="text-base leading-7 text-gray-800">{chapter.conclusion}</motion.p>
+        <motion.p {...fade(0.1)} className="text-base leading-7 text-gray-800">{lang === 'ru' ? chapter.conclusionRu : chapter.conclusion}</motion.p>
       </section>
 
       {/* REFERENCES */}
@@ -241,39 +241,39 @@ export default function ArticlePage() {
 /*  Block Renderer                                                     */
 /* ================================================================== */
 
-function BlockRenderer({ block, index, threshold, setThreshold, all, mA, mB }: {
+function BlockRenderer({ block, index, threshold, setThreshold, all, mA, mB, lang }: {
   block: ContentBlock; index: number; threshold: number; setThreshold: (v: number) => void
   all: { truth: number; prediction: number; group: string; prob: number; id: string }[]
   mA: { fpr: number; fnr: number; acc: number }; mB: { fpr: number; fnr: number; acc: number }
-  tabIndex: number; setTabIndex: (v: number) => void
+  tabIndex: number; setTabIndex: (v: number) => void; lang: 'en' | 'ru'
 }) {
   switch (block.type) {
     case 'text':
-      return <motion.div {...fade(index * 0.05)} className="text-base leading-7 text-gray-800" dangerouslySetInnerHTML={{ __html: block.html }} />
+      return <motion.div {...fade(index * 0.05)} className="text-base leading-7 text-gray-800" dangerouslySetInnerHTML={{ __html: (lang === 'ru' && block.htmlRu) ? block.htmlRu : block.html }} />
     case 'formula':
       return (
         <motion.div {...fade(index * 0.05)} className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm text-center">
-          {block.label && <p className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wider">{block.label}</p>}
+          {block.label && <p className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wider">{(lang === 'ru' && block.labelRu) ? block.labelRu : block.label}</p>}
           <MathBlock display math={block.math} />
         </motion.div>
       )
     case 'definition':
       return (
         <motion.div {...fade(index * 0.05)} className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-          <p className="text-sm font-semibold text-gray-700 mb-1">{block.title}</p>
+          <p className="text-sm font-semibold text-gray-700 mb-1">{(lang === 'ru' && block.titleRu) ? block.titleRu : block.title}</p>
           <MathBlock display math={block.math} />
-          {block.note && <p className="text-sm text-gray-500 mt-2">{block.note}</p>}
+          {block.note && <p className="text-sm text-gray-500 mt-2">{(lang === 'ru' && block.noteRu) ? block.noteRu : block.note}</p>}
         </motion.div>
       )
     case 'info':
       const colors = { accent: 'bg-accent-50 border-accent-200 text-accent-800', emerald: 'bg-emerald-50 border-emerald-200 text-emerald-800', amber: 'bg-amber-50 border-amber-200 text-amber-800' }
       return (
         <motion.div {...fade(index * 0.05)} className={`rounded-xl p-4 border text-sm leading-relaxed ${colors[block.variant]}`}>
-          {block.text}
+          {(lang === 'ru' && block.textRu) ? block.textRu : block.text}
         </motion.div>
       )
     case 'chart':
-      return <ChartBlock block={block} index={index} threshold={threshold} setThreshold={setThreshold} all={all} mA={mA} mB={mB} />
+      return <ChartBlock block={block} index={index} threshold={threshold} setThreshold={setThreshold} all={all} mA={mA} mB={mB} lang={lang} />
     case 'tabs':
       return <div className="text-gray-600 text-sm">Tabs placeholder</div>
     default:
@@ -285,12 +285,13 @@ function BlockRenderer({ block, index, threshold, setThreshold, all, mA, mB }: {
 /*  Chart Block                                                        */
 /* ================================================================== */
 
-function ChartBlock({ block, index, threshold, setThreshold, all, mA, mB }: {
+function ChartBlock({ block, index, threshold, setThreshold, all, mA, mB, lang: propsLang }: {
   block: Extract<ContentBlock, { type: 'chart' }>; index: number; threshold: number; setThreshold: (v: number) => void
   all: { truth: number; prediction: number; group: string; prob: number; id: string }[]
-  mA: { fpr: number; fnr: number; acc: number }; mB: { fpr: number; fnr: number; acc: number }
+  mA: { fpr: number; fnr: number; acc: number }; mB: { fpr: number; fnr: number; acc: number }; lang?: 'en' | 'ru'
 }) {
-  const { t } = useLang()
+  const { t, lang: ctxLang } = useLang()
+  const lang = propsLang ?? ctxLang
   const dotColor = (d: { truth: number; prediction: number; group: string }) => {
     if (d.group === 'A') return d.truth === d.prediction ? '#6366f1' : '#3b82f6'
     return d.truth === d.prediction ? '#10b981' : '#ec4899'
@@ -298,8 +299,8 @@ function ChartBlock({ block, index, threshold, setThreshold, all, mA, mB }: {
 
   return (
     <motion.div {...fade(index * 0.05)} className="bg-white rounded-2xl p-5 md:p-7 border border-gray-200 shadow-sm">
-      <h3 className="text-base font-bold text-gray-800 mb-1">{block.title}</h3>
-      <p className="text-sm text-gray-500 mb-4">{block.description}</p>
+      <h3 className="text-base font-bold text-gray-800 mb-1">{(lang === 'ru' && block.titleRu) ? block.titleRu : block.title}</h3>
+      <p className="text-sm text-gray-500 mb-4">{(lang === 'ru' && block.descriptionRu) ? block.descriptionRu : block.description}</p>
 
       {/* Interactive slider for beeswarm */}
       {block.chart === 'beeswarm' && block.interactive && (

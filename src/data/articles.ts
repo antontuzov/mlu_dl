@@ -6,18 +6,22 @@ export interface FormulaSection {
   type: 'formula'
   math: string
   label?: string
+  labelRu?: string
 }
 
 export interface TextSection {
   type: 'text'
   html: string // supports <strong>, <em>, <InfoTooltip />
+  htmlRu?: string
 }
 
 export interface ChartSection {
   type: 'chart'
   chart: 'beeswarm' | 'bar' | 'line' | 'roc' | 'scatter' | 'area' | 'sigmoid' | 'tree' | 'forest' | 'heatmap' | 'architecture'
   title: string
+  titleRu?: string
   description: string
+  descriptionRu?: string
   interactive?: boolean
 }
 
@@ -29,14 +33,17 @@ export interface TabSection {
 export interface DefinitionBox {
   type: 'definition'
   title: string
+  titleRu?: string
   math: string
   note?: string
+  noteRu?: string
 }
 
 export interface InfoBox {
   type: 'info'
   variant: 'accent' | 'emerald' | 'amber'
   text: string
+  textRu?: string
 }
 
 export type ContentBlock =
@@ -50,12 +57,15 @@ export type ContentBlock =
 export interface ArticleChapter {
   slug: string
   title: string
+  titleRu: string
   subtitle: string
+  subtitleRu: string
   authors: string
   date: string
   thumbnail: string
-  sections: { heading: string; blocks: ContentBlock[] }[]
+  sections: { heading: string; headingRu: string; blocks: ContentBlock[] }[]
   conclusion: string
+  conclusionRu: string
   references: { title: string; authors: string; url: string }[]
 }
 
@@ -70,13 +80,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'neural-networks',
     title: 'Neural Networks',
+    titleRu: 'Нейронные сети',
     subtitle: 'The Building Blocks of Deep Learning',
+    subtitleRu: 'Строительные блоки глубокого обучения',
     authors: 'Jared Wilber',
     date: 'March 2024',
     thumbnail: `${BASE}/thumbnail-neural-networks.jpg`,
     sections: [
       {
         heading: 'What is a Neural Network?',
+        headingRu: 'Что такое нейронная сеть?',
         blocks: [
           { type: 'text', html: 'Neural networks are computational models inspired by the biological neural networks in the human brain. They consist of layers of interconnected nodes (<strong>neurons</strong>) that process information using connectionist approaches to computation.' },
           { type: 'text', html: 'Each connection (synapse) between neurons has a <strong>weight</strong> that is adjusted during learning. A neuron computes a weighted sum of its inputs, adds a bias, and passes the result through an <strong>activation function</strong>.' },
@@ -86,6 +99,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Network Architecture',
+        headingRu: 'Архитектура сети',
         blocks: [
           { type: 'text', html: 'A typical neural network consists of an <strong>input layer</strong>, one or more <strong>hidden layers</strong>, and an <strong>output layer</strong>. The depth (number of hidden layers) gives rise to the term "deep learning".' },
           { type: 'chart', chart: 'area', title: 'Layer Activations During Forward Pass', description: 'Visualizing how activations flow through the network layers', interactive: true },
@@ -95,6 +109,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Training with Gradient Descent',
+        headingRu: 'Обучение градиентным спуском',
         blocks: [
           { type: 'text', html: 'Gradient descent is the optimization algorithm used to update weights. It iteratively moves toward the minimum of the loss function.' },
           { type: 'chart', chart: 'scatter', title: 'Loss Landscape & Optimization Path', description: 'Watch gradient descent navigate the loss surface', interactive: true },
@@ -106,6 +121,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'Neural networks are the backbone of modern AI. From ChatGPT to Stable Diffusion, understanding their architecture and training process is essential for anyone working in machine learning today.',
+    conclusionRu: 'Нейронные сети — основа современного ИИ. От ChatGPT до Stable Diffusion — понимание их архитектуры и процесса обучения необходимо каждому, кто работает в машинном обучении.',
     references: [
       { title: 'Deep Learning', authors: 'Ian Goodfellow, Yoshua Bengio, Aaron Courville', url: 'https://www.deeplearningbook.org/' },
       { title: 'Neural Networks and Deep Learning', authors: 'Michael Nielsen', url: 'http://neuralnetworksanddeeplearning.com/' },
@@ -116,13 +132,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'equality-of-odds',
     title: 'Equality Of Odds',
+    titleRu: 'Равенство шансов',
     subtitle: 'A Visual Introduction to Measuring and Mitigating Bias in Machine Learning',
+    subtitleRu: 'Визуальное введение в измерение и устранение смещений в машинном обучении',
     authors: 'Mia Mayer & Jared Wilber',
     date: 'April 2023',
     thumbnail: `${BASE}/thumbnail-equality-of-odds.jpg`,
     sections: [
       {
         heading: 'Defining Equalized Odds',
+        headingRu: 'Определение равных шансов',
         blocks: [
           { type: 'text', html: 'The <em>Equalized Odds</em> (EO) fairness criterion aims to equalize the errors a model makes for different groups. EO considers the ground truth distribution of labels.' },
           { type: 'text', html: 'In a hiring scenario, a model could make a <strong>wrong rejection</strong> (rejecting a qualified candidate) or a <strong>wrong acceptance</strong> (accepting an unqualified candidate).' },
@@ -132,6 +151,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Measuring Fairness',
+        headingRu: 'Измерение справедливости',
         blocks: [
           { type: 'text', html: 'We compare error rates across groups. The key metrics are <strong>FPR</strong> (false positive rate) and <strong>FNR</strong> (false negative rate).' },
           { type: 'chart', chart: 'beeswarm', title: 'Interactive: Beeswarm Predictions', description: 'Drag the threshold to change the probability cutoff', interactive: true },
@@ -141,6 +161,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Achieving Fairness',
+        headingRu: 'Достижение справедливости',
         blocks: [
           { type: 'text', html: 'We can achieve EO through <strong>constrained optimization during training</strong> or via <strong>post-processing</strong>.' },
           { type: 'formula', math: '\\min_\\theta L(\\theta) \\quad \\text{s.t.} \\quad |P(\\hat{Y}\\neq Y, A{=}\\blacksquare) - P(\\hat{Y}\\neq Y, A{=}\\square)| \\leq \\varepsilon', label: 'Constrained optimization' },
@@ -150,6 +171,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'Equality of Odds offers a principled approach to measuring and mitigating bias. Before using EO, carefully consider the context and potential trade-offs between competing objectives.',
+    conclusionRu: 'Равенство шансов предлагает принципиальный подход к измерению и устранению смещений. Перед использованием EO тщательно учитывайте контекст и возможные компромиссы между конкурирующими целями.',
     references: [
       { title: 'Fairness and Machine Learning', authors: 'Barocas, Hardt, Narayanan', url: 'https://fairmlbook.org/' },
       { title: 'Equality of Opportunity in Supervised Learning', authors: 'Hardt, Price, Srebro, 2016', url: 'https://arxiv.org/abs/1610.02413' },
@@ -160,13 +182,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'logistic-regression',
     title: 'Logistic Regression',
+    titleRu: 'Логистическая регрессия',
     subtitle: 'Binary Classification Through the Sigmoid Function',
+    subtitleRu: 'Бинарная классификация через сигмоидную функцию',
     authors: 'Jared Wilber',
     date: 'February 2024',
     thumbnail: `${BASE}/thumbnail-logistic-regression.jpg`,
     sections: [
       {
         heading: 'The Sigmoid Function',
+        headingRu: 'Сигмоидная функция',
         blocks: [
           { type: 'text', html: 'Logistic regression models the probability that an input belongs to a particular class using the <strong>sigmoid (logistic) function</strong>.' },
           { type: 'formula', math: 'P(y=1 \\mid x) = \\frac{1}{1 + e^{-(w^Tx + b)}}', label: 'Sigmoid output' },
@@ -176,6 +201,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Log-Loss and Maximum Likelihood',
+        headingRu: 'Лог-потеря и метод максимального правдоподобия',
         blocks: [
           { type: 'text', html: 'Unlike linear regression, logistic regression uses <strong>log-loss</strong> (cross-entropy) as its cost function, derived from maximum likelihood estimation.' },
           { type: 'formula', math: 'L(\\theta) = -\\frac{1}{m}\\sum_{i=1}^{m}[y_i\\log(h_\\theta(x_i)) + (1-y_i)\\log(1-h_\\theta(x_i))]', label: 'Cross-entropy loss' },
@@ -185,6 +211,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Regularization and Multiclass',
+        headingRu: 'Регуляризация и мультиклассовая классификация',
         blocks: [
           { type: 'text', html: 'To prevent overfitting, logistic regression commonly uses <strong>L2 regularization</strong> (C parameter in scikit-learn). For multiclass problems, <strong>One-vs-Rest</strong> or <strong>Softmax (multinomial)</strong> logistic regression extends the binary model.' },
           { type: 'formula', math: 'L_{reg}(\\theta) = L(\\theta) + \\frac{\\lambda}{2m}\\|\\theta\\|^2', label: 'Regularized logistic regression' },
@@ -194,6 +221,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'Logistic regression remains one of the most widely used classification algorithms. Its simplicity, interpretability, and probabilistic output make it an excellent baseline model.',
+    conclusionRu: 'Логистическая регрессия остаётся одним из самых популярных алгоритмов классификации. Её простота, интерпретируемость и вероятностный вывод делают её отличной базовой моделью.',
     references: [
       { title: 'Pattern Recognition and Machine Learning', authors: 'Christopher Bishop', url: 'https://www.microsoft.com/en-us/research/publication/pattern-recognition-machine-learning/' },
     ],
@@ -203,13 +231,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'linear-regression',
     title: 'Linear Regression',
+    titleRu: 'Линейная регрессия',
     subtitle: 'Fitting Lines to Data with Least Squares',
+    subtitleRu: 'Аппроксимация данных методом наименьших квадратов',
     authors: 'Jared Wilber',
     date: 'January 2024',
     thumbnail: `${BASE}/thumbnail-linear-regression.jpg`,
     sections: [
       {
         heading: 'The Linear Model',
+        headingRu: 'Линейная модель',
         blocks: [
           { type: 'text', html: 'Linear regression models the relationship between a dependent variable and one or more independent variables using a <strong>linear equation</strong>.' },
           { type: 'formula', math: '\\hat{y} = w_1x_1 + w_2x_2 + \\ldots + w_nx_n + b', label: 'Linear prediction' },
@@ -218,6 +249,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Ordinary Least Squares',
+        headingRu: 'Метод наименьших квадратов',
         blocks: [
           { type: 'text', html: 'The <strong>OLS method</strong> finds the parameters that minimize the sum of squared differences between observed and predicted values.' },
           { type: 'formula', math: '\\hat{w} = (X^TX)^{-1}X^Ty', label: 'OLS closed-form solution' },
@@ -228,6 +260,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'Linear regression is the foundation upon which many advanced ML techniques are built. Understanding its assumptions and limitations is key to proper application.',
+    conclusionRu: 'Линейная регрессия — фундамент многих продвинутых методов МО. Понимание её допущений и ограничений — ключ к правильному применению.',
     references: [
       { title: 'An Introduction to Statistical Learning', authors: 'James, Witten, Hastie, Tibshirani', url: 'https://www.statlearning.com/' },
     ],
@@ -237,13 +270,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'reinforcement-learning',
     title: 'Reinforcement Learning',
+    titleRu: 'Обучение с подкреплением',
     subtitle: 'Learning Through Trial and Error in Interactive Environments',
+    subtitleRu: 'Обучение методом проб и ошибок в интерактивных средах',
     authors: 'Jared Wilber',
     date: 'May 2023',
     thumbnail: `${BASE}/thumbnail-reinforcement-learning.jpg`,
     sections: [
       {
         heading: 'The RL Framework',
+        headingRu: 'Фреймворк обучения с подкреплением',
         blocks: [
           { type: 'text', html: 'In reinforcement learning, an <strong>agent</strong> learns to make decisions by interacting with an <strong>environment</strong>. The agent receives <strong>rewards</strong> or <strong>penalties</strong> based on its actions.' },
           { type: 'formula', math: 'G_t = \\sum_{k=0}^{\\infty} \\gamma^k R_{t+k+1}', label: 'Discounted return' },
@@ -253,6 +289,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Q-Learning',
+        headingRu: 'Q-обучение',
         blocks: [
           { type: 'text', html: 'Q-learning is a model-free algorithm that learns the value of taking an action in a given state.' },
           { type: 'formula', math: 'Q(s,a) \\leftarrow Q(s,a) + \\alpha[r + \\gamma \\max_{a\'} Q(s\',a\') - Q(s,a)]', label: 'Q-learning update rule' },
@@ -263,6 +300,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'Reinforcement learning powers some of AI\'s most impressive achievements, from game-playing to robotics. Understanding the exploration-exploitation tradeoff is key to building effective RL agents.',
+    conclusionRu: 'Обучение с подкреплением обеспечивает одни из самых впечатляющих достижений ИИ — от игр до робототехники. Понимание компромисса «исследование vs. эксплуатация» — ключ к созданию эффективных RL-агентов.',
     references: [
       { title: 'Reinforcement Learning: An Introduction', authors: 'Richard Sutton & Andrew Barto', url: 'http://incompleteideas.net/book/the-book-2nd.html' },
     ],
@@ -272,13 +310,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'roc-auc',
     title: 'ROC & AUC',
+    titleRu: 'ROC-кривая и AUC',
     subtitle: 'Visualizing Classifier Performance Across All Thresholds',
+    subtitleRu: 'Визуализация качества классификатора на всех порогах',
     authors: 'Jared Wilber',
     date: 'June 2023',
     thumbnail: `${BASE}/thumbnail-roc-auc.jpg`,
     sections: [
       {
         heading: 'The ROC Curve',
+        headingRu: 'ROC-кривая',
         blocks: [
           { type: 'text', html: 'The <strong>Receiver Operating Characteristic</strong> (ROC) curve plots the True Positive Rate against the False Positive Rate at various classification thresholds.' },
           { type: 'chart', chart: 'roc', title: 'Comparing ROC Curves', description: 'Perfect vs. Our vs. Random classifier', interactive: true },
@@ -287,6 +328,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Interpreting AUC',
+        headingRu: 'Интерпретация AUC',
         blocks: [
           { type: 'text', html: 'AUC represents the probability that a randomly chosen positive example is ranked higher than a randomly chosen negative example.' },
           { type: 'chart', chart: 'area', title: 'AUC Under Varying Class Distributions', description: 'How class imbalance affects the ROC curve', interactive: true },
@@ -296,6 +338,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'The ROC curve and AUC provide a threshold-independent way to evaluate classifiers, making them invaluable for comparing models across different operating points.',
+    conclusionRu: 'ROC-кривая и AUC обеспечивают независимый от порога способ оценки классификаторов, что делает их незаменимыми для сравнения моделей в различных рабочих режимах.',
     references: [
       { title: 'An Introduction to ROC Analysis', authors: 'Tom Fawcett, 2006', url: 'https://doi.org/10.1016/j.patrec.2005.10.010' },
     ],
@@ -305,13 +348,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'cross-validation',
     title: 'Cross-Validation',
+    titleRu: 'Кросс-валидация',
     subtitle: 'K-Fold Resampling for Robust Model Evaluation',
+    subtitleRu: 'K-блочная реорганизация для надёжной оценки модели',
     authors: 'Jared Wilber',
     date: 'July 2023',
     thumbnail: `${BASE}/thumbnail-cross-validation.jpg`,
     sections: [
       {
         heading: 'Why Cross-Validation?',
+        headingRu: 'Зачем нужна кросс-валидация?',
         blocks: [
           { type: 'text', html: 'A single train/test split can give a misleading estimate of model performance. <strong>K-Fold Cross-Validation</strong> provides a more robust evaluation by averaging over multiple splits.' },
           { type: 'chart', chart: 'bar', title: 'K-Fold Split Visualization', description: 'How data is partitioned across K folds', interactive: true },
@@ -321,6 +367,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Variants of Cross-Validation',
+        headingRu: 'Варианты кросс-валидации',
         blocks: [
           { type: 'text', html: '<strong>Stratified K-Fold</strong> preserves the class distribution in each fold — essential for imbalanced datasets. <strong>Leave-One-Out (LOO)</strong> uses K = N, giving an almost unbiased estimate but at high computational cost.' },
           { type: 'formula', math: '\\text{LOO}: \\hat{E} = \\frac{1}{N}\\sum_{i=1}^{N} L(y_i, \\hat{f}_{-i}(x_i))', label: 'Leave-One-Out error' },
@@ -331,6 +378,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'Cross-validation is essential for model selection and hyperparameter tuning, providing a more reliable estimate of how your model will generalize to unseen data.',
+    conclusionRu: 'Кросс-валидация необходима для выбора модели и настройки гиперпараметров, обеспечивая более надёжную оценку того, как модель будет работать на новых данных.',
     references: [
       { title: 'An Introduction to Statistical Learning', authors: 'James, Witten, Hastie, Tibshirani', url: 'https://www.statlearning.com/' },
     ],
@@ -340,13 +388,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'train-test-validation',
     title: 'Train, Test, and Validation Sets',
+    titleRu: 'Обучающая, тестовая и валидационная выборки',
     subtitle: 'Why Data Splitting Matters for Model Evaluation',
+    subtitleRu: 'Почему разделение данных важно для оценки модели',
     authors: 'Jared Wilber',
     date: 'August 2023',
     thumbnail: `${BASE}/thumbnail-train-test-validation.jpg`,
     sections: [
       {
         heading: 'The Three Splits',
+        headingRu: 'Три выборки',
         blocks: [
           { type: 'text', html: 'Proper data splitting is crucial: the <strong>training set</strong> teaches the model, the <strong>validation set</strong> tunes hyperparameters, and the <strong>test set</strong> provides an unbiased performance estimate.' },
           { type: 'chart', chart: 'bar', title: 'Performance Across Data Splits', description: 'How models perform on train vs. validation vs. test data', interactive: true },
@@ -356,6 +407,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Data Leakage & Common Pitfalls',
+        headingRu: 'Утечка данных и типичные ошибки',
         blocks: [
           { type: 'text', html: '<strong>Data leakage</strong> occurs when information from the test/validation set inadvertently influences training. Common sources include: preprocessing on the entire dataset before splitting, duplicate samples across splits, and temporal leakage in time-series data.' },
           { type: 'definition', title: 'Correct Preprocessing Order', math: '\\text{1. Split} \\to \\text{2. Fit scaler on train} \\to \\text{3. Transform all}', note: 'Always fit preprocessing (scalers, imputers, encoders) on the training set only, then transform validation/test.' },
@@ -365,6 +417,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'The train/validation/test split is the foundation of rigorous ML evaluation. Each set serves a distinct purpose in the model development pipeline.',
+    conclusionRu: 'Разделение на обучающую/валидационную/тестовую выборки — основа строгой оценки ML-моделей. Каждая выборка выполняет свою функцию в процессе разработки.',
     references: [
       { title: 'Elements of Statistical Learning', authors: 'Hastie, Tibshirani, Friedman', url: 'https://hastie.su.domains/ElemStatLearn/' },
     ],
@@ -374,13 +427,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'precision-recall',
     title: 'Precision & Recall',
+    titleRu: 'Точность и полнота',
     subtitle: 'Beyond Accuracy: Evaluating Classification Models',
+    subtitleRu: 'За рамками accuracy: оценка классификационных моделей',
     authors: 'Jared Wilber',
     date: 'September 2023',
     thumbnail: `${BASE}/thumbnail-precision-recall.jpg`,
     sections: [
       {
         heading: 'The Confusion Matrix',
+        headingRu: 'Матрица ошибок',
         blocks: [
           { type: 'text', html: 'The <strong>confusion matrix</strong> summarizes the performance of a classification model by counting true positives, true negatives, false positives, and false negatives.' },
           { type: 'formula', math: '\\text{Precision} = \\frac{TP}{TP + FP}, \\quad \\text{Recall} = \\frac{TP}{TP + FN}', label: 'Precision & Recall' },
@@ -391,6 +447,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Precision-Recall Curves',
+        headingRu: 'PR-кривые',
         blocks: [
           { type: 'text', html: 'The <strong>PR curve</strong> plots Precision vs. Recall at all thresholds. Unlike ROC, PR curves are sensitive to class imbalance, making them more informative for imbalanced datasets.' },
           { type: 'chart', chart: 'roc', title: 'Precision-Recall Curve Comparison', description: 'Comparing PR curves for balanced vs. imbalanced datasets', interactive: true },
@@ -400,6 +457,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'When accuracy is misleading (e.g., imbalanced datasets), precision and recall provide a much clearer picture of model performance.',
+    conclusionRu: 'Когда accuracy вводит в заблуждение (например, при несбалансированных данных), точность и полнота дают гораздо более ясную картину качества модели.',
     references: [
       { title: 'The Relationship Between Precision-Recall and ROC Curves', authors: 'Davis & Goadrich, 2006', url: 'https://doi.org/10.1145/1143844.1143874' },
     ],
@@ -409,13 +467,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'random-forest',
     title: 'Random Forest',
+    titleRu: 'Случайный лес',
     subtitle: 'The Power of Ensemble Learning',
+    subtitleRu: 'Сила ансамблевого обучения',
     authors: 'Jared Wilber',
     date: 'October 2023',
     thumbnail: `${BASE}/thumbnail-random-forest.jpg`,
     sections: [
       {
         heading: 'Ensemble of Decision Trees',
+        headingRu: 'Ансамбль решающих деревьев',
         blocks: [
           { type: 'text', html: 'A <strong>Random Forest</strong> builds many decision trees on random subsets of the data and combines their predictions through <strong>majority voting</strong> (classification) or <strong>averaging</strong> (regression).' },
           { type: 'chart', chart: 'forest', title: 'Forest of Trees Voting', description: 'How multiple trees combine for a robust prediction', interactive: true },
@@ -427,6 +488,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Hyperparameter Tuning',
+        headingRu: 'Настройка гиперпараметров',
         blocks: [
           { type: 'text', html: 'Key hyperparameters include: <strong>number of trees</strong> (more = better, diminishing returns), <strong>max depth</strong> (controls overfitting), <strong>min samples per leaf</strong> (regularization), and <strong>max features per split</strong> (diversity).' },
           { type: 'chart', chart: 'area', title: 'Performance vs. Number of Trees', description: 'How accuracy improves as more trees are added', interactive: true },
@@ -436,6 +498,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'Random Forest is one of the most widely-used and robust ML algorithms. Its ability to handle high-dimensional data with minimal tuning makes it a go-to choice for many practitioners.',
+    conclusionRu: 'Случайный лес — один из самых популярных и надёжных алгоритмов МО. Его способность работать с многомерными данными при минимальной настройке делает его выбором номер один для многих специалистов.',
     references: [
       { title: 'Random Forests', authors: 'Leo Breiman, 2001', url: 'https://doi.org/10.1023/A:1010933404324' },
     ],
@@ -445,13 +508,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'decision-trees',
     title: 'Decision Trees',
+    titleRu: 'Решающие деревья',
     subtitle: 'Splitting Data with Entropy and Information Gain',
+    subtitleRu: 'Разделение данных по энтропии и приросту информации',
     authors: 'Jared Wilber',
     date: 'November 2023',
     thumbnail: `${BASE}/thumbnail-decision-tree.jpg`,
     sections: [
       {
         heading: 'How Trees Split Data',
+        headingRu: 'Как деревья разделяют данные',
         blocks: [
           { type: 'text', html: 'Decision trees recursively partition the feature space by choosing the split that maximizes <strong>information gain</strong> — the reduction in uncertainty.' },
           { type: 'formula', math: 'H(S) = -\\sum_{i=1}^{c} p_i \\log_2 p_i', label: 'Entropy' },
@@ -464,6 +530,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Pruning and Regularization',
+        headingRu: 'Обрезка и регуляризация',
         blocks: [
           { type: 'text', html: 'Unconstrained trees will memorize the training data perfectly. <strong>Pre-pruning</strong> stops growth early (max depth, min samples per split). <strong>Post-pruning</strong> (cost-complexity pruning) grows the full tree then removes branches that don\'t improve validation performance.' },
           { type: 'formula', math: 'C_\\alpha(T) = \\sum_{m=1}^{|T|} N_m Q_m(T) + \\alpha |T|', label: 'Cost-complexity pruning (CART)' },
@@ -473,6 +540,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'Decision trees are intuitive, interpretable, and form the foundation for powerful ensemble methods like Random Forest and Gradient Boosting.',
+    conclusionRu: 'Решающие деревья интуитивно понятны, интерпретируемы и образуют основу мощных ансамблевых методов — случайного леса и градиентного бустинга.',
     references: [
       { title: 'Classification and Regression Trees', authors: 'Breiman, Friedman, Olshen, Stone', url: 'https://doi.org/10.1201/9781315139470' },
     ],
@@ -482,13 +550,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'bias-variance',
     title: 'The Bias-Variance Tradeoff',
+    titleRu: 'Компромисс смещения и дисперсии',
     subtitle: 'Balancing Underfitting and Overfitting',
+    subtitleRu: 'Баланс между недообучением и переобучением',
     authors: 'Jared Wilber',
     date: 'December 2023',
     thumbnail: `${BASE}/thumbnail-bias-variance.jpg`,
     sections: [
       {
         heading: 'Decomposing Error',
+        headingRu: 'Декомпозиция ошибки',
         blocks: [
           { type: 'text', html: 'The total prediction error can be decomposed into <strong>bias</strong> (error from wrong assumptions), <strong>variance</strong> (sensitivity to training data), and <strong>irreducible noise</strong>.' },
           { type: 'formula', math: 'E[(y - \\hat{f}(x))^2] = \\text{Bias}[\\hat{f}(x)]^2 + \\text{Var}[\\hat{f}(x)] + \\sigma^2', label: 'Bias-variance decomposition' },
@@ -497,6 +568,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Interactive: LOESS and KNN',
+        headingRu: 'Интерактив: LOESS и KNN',
         blocks: [
           { type: 'text', html: 'Adjust the smoothing parameter to see how bias and variance change. Low smoothing = low bias, high variance (overfitting). High smoothing = high bias, low variance (underfitting).' },
           { type: 'chart', chart: 'scatter', title: 'LOESS Smoothing Parameter', description: 'Adjust to see the bias-variance effect in real-time', interactive: true },
@@ -506,6 +578,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'The bias-variance tradeoff is a fundamental concept in ML. Finding the sweet spot between underfitting and overfitting is the central challenge of model selection.',
+    conclusionRu: 'Компромисс смещения и дисперсии — фундаментальная концепция МО. Поиск баланса между недообучением и переобучением — главная задача выбора модели.',
     references: [
       { title: 'Elements of Statistical Learning', authors: 'Hastie, Tibshirani, Friedman', url: 'https://hastie.su.domains/ElemStatLearn/' },
     ],
@@ -515,13 +588,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'double-descent',
     title: 'Double Descent: A Visual Introduction',
+    titleRu: 'Двойной спуск: визуальное введение',
     subtitle: 'The Surprising Behavior of Modern ML Models',
+    subtitleRu: 'Неожиданное поведение современных ML-моделей',
     authors: 'Jared Wilber',
     date: 'January 2024',
     thumbnail: `${BASE}/thumbnail-double-descent.jpg`,
     sections: [
       {
         heading: 'The Double Descent Phenomenon',
+        headingRu: 'Феномен двойного спуска',
         blocks: [
           { type: 'text', html: 'In classical ML, test error follows a U-shape as model complexity increases. But in modern deep learning, test error can <strong>decrease again</strong> past the interpolation threshold — this is <strong>double descent</strong>.' },
           { type: 'chart', chart: 'line', title: 'Prediction Error vs. Model Complexity', description: 'The classic U-shape followed by a second descent', interactive: true },
@@ -532,6 +608,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'Double descent reveals that our classical understanding of generalization is incomplete. Modern overparameterized models can achieve remarkable generalization despite perfectly fitting training data.',
+    conclusionRu: 'Двойной спуск показывает, что классическое понимание обобщения неполно. Современные сверхпараметризованные модели могут достигать замечательного обобщения, даже идеально подгоняя обучающие данные.',
     references: [
       { title: 'Deep Double Descent', authors: 'Nakkiran et al., 2019', url: 'https://arxiv.org/abs/1912.02292' },
     ],
@@ -541,13 +618,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'double-descent-2',
     title: 'Double Descent: A Mathematical Explanation',
+    titleRu: 'Двойной спуск: математическое объяснение',
     subtitle: 'Understanding the Mathematics Behind the Phenomenon',
+    subtitleRu: 'Понимание математики за феноменом',
     authors: 'Jared Wilber',
     date: 'February 2024',
     thumbnail: `${BASE}/thumbnail-double-descent2.jpg`,
     sections: [
       {
         heading: 'The Cubic Spline Model',
+        headingRu: 'Модель кубических сплайнов',
         blocks: [
           { type: 'text', html: 'Using <strong>cubic splines</strong> as a tractable model, we can derive the double descent curve analytically. The key insight is how the model\'s effective complexity changes near the interpolation threshold.' },
           { type: 'formula', math: '\\hat{f}(x) = \\sum_{j=1}^{K} \\beta_j B_j(x)', label: 'Basis function expansion' },
@@ -556,6 +636,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'The Role of Implicit Regularization',
+        headingRu: 'Роль неявной регуляризации',
         blocks: [
           { type: 'text', html: 'In overparameterized settings, gradient descent acts as an <strong>implicit regularizer</strong>, selecting the minimum-norm solution among all interpolating functions.' },
           { type: 'formula', math: '\\hat{\\beta} = X^T(XX^T)^{-1}y', label: 'Minimum-norm solution (p > n)' },
@@ -564,6 +645,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'The mathematical analysis of double descent reveals how implicit regularization in overparameterized models leads to good generalization — a key insight for modern deep learning theory.',
+    conclusionRu: 'Математический анализ двойного спуска раскрывает, как неявная регуляризация в сверхпараметризованных моделях приводит к хорошему обобщению — ключевой инсайт теории глубокого обучения.',
     references: [
       { title: 'Benign Overfitting in Linear Regression', authors: 'Bartlett et al., 2020', url: 'https://arxiv.org/abs/1906.11300' },
     ],
@@ -573,13 +655,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'cnn',
     title: 'Convolutional Neural Networks',
+    titleRu: 'Свёрточные нейронные сети',
     subtitle: 'How Machines Learn to See — From Pixels to Patterns',
+    subtitleRu: 'Как машины учатся видеть — от пикселей к паттернам',
     authors: 'Jared Wilber',
     date: 'March 2024',
     thumbnail: '/thumbnails/thumbnail-cnn.svg',
     sections: [
       {
         heading: 'The Convolution Operation',
+        headingRu: 'Операция свёртки',
         blocks: [
           { type: 'text', html: 'A <strong>convolution</strong> slides a small filter (kernel) across an input image, computing a dot product at each position. This produces a <strong>feature map</strong> that highlights specific patterns — edges, textures, or shapes.' },
           { type: 'formula', math: '(f * g)(t) = \\sum_{\\tau} f(\\tau) \\cdot g(t - \\tau)', label: 'Discrete convolution' },
@@ -589,6 +674,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Pooling & Hierarchical Features',
+        headingRu: 'Пулинг и иерархические признаки',
         blocks: [
           { type: 'text', html: '<strong>Max pooling</strong> downsamples feature maps by taking the maximum value in each window. This provides translation invariance and reduces computation.' },
           { type: 'formula', math: 'y_{i,j} = \\max_{(p,q) \\in R_{i,j}} x_{p,q}', label: 'Max pooling' },
@@ -598,6 +684,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Training a CNN',
+        headingRu: 'Обучение свёрточной сети',
         blocks: [
           { type: 'text', html: 'CNNs learn filters automatically through <strong>backpropagation</strong>. Early layers detect edges, middle layers detect shapes, and deep layers detect complex objects.' },
           { type: 'chart', chart: 'area', title: 'Training & Validation Loss', description: 'How a CNN learns to classify images over epochs', interactive: true },
@@ -608,6 +695,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'CNNs revolutionized computer vision and remain the backbone of image understanding systems — from medical imaging to self-driving cars. Their hierarchical feature learning mirrors how the visual cortex processes information.',
+    conclusionRu: 'Свёрточные сети произвели революцию в компьютерном зрении и остаются основой систем распознавания изображений — от медицинской визуализации до беспилотных автомобилей. Их иерархическое обучение признаков повторяет работу зрительной коры.',
     references: [
       { title: 'Gradient-Based Learning Applied to Document Recognition', authors: 'LeCun et al., 1998', url: 'http://yann.lecun.com/exdb/publis/pdf/lecun-98.pdf' },
       { title: 'Deep Residual Learning for Image Recognition', authors: 'He et al., 2015', url: 'https://arxiv.org/abs/1512.03385' },
@@ -618,13 +706,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'rnn-lstm',
     title: 'RNNs & LSTMs',
+    titleRu: 'RNN и LSTM',
     subtitle: 'Learning from Sequences — Memory in Neural Networks',
+    subtitleRu: 'Обучение на последовательностях — память в нейросетях',
     authors: 'Jared Wilber',
     date: 'April 2024',
     thumbnail: '/thumbnails/thumbnail-rnn.svg',
     sections: [
       {
         heading: 'The Recurrence',
+        headingRu: 'Рекуррентность',
         blocks: [
           { type: 'text', html: 'Recurrent Neural Networks process sequences one element at a time, maintaining a <strong>hidden state</strong> that acts as memory. At each timestep, the hidden state is updated using the current input and the previous state.' },
           { type: 'formula', math: 'h_t = \\tanh(W_{hh} h_{t-1} + W_{xh} x_t + b_h)', label: 'RNN hidden state update' },
@@ -634,6 +725,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Long Short-Term Memory (LSTM)',
+        headingRu: 'Долгая краткосрочная память (LSTM)',
         blocks: [
           { type: 'text', html: 'LSTMs solve the vanishing gradient problem using a <strong>cell state</strong> and three <strong>gates</strong> that control the flow of information.' },
           { type: 'formula', math: 'f_t = \\sigma(W_f \\cdot [h_{t-1}, x_t] + b_f)', label: 'Forget gate' },
@@ -645,6 +737,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Sequence Modeling in Practice',
+        headingRu: 'Моделирование последовательностей на практике',
         blocks: [
           { type: 'chart', chart: 'line', title: 'Perplexity vs. Training Epochs', description: 'How LSTM language models improve over time', interactive: true },
           { type: 'chart', chart: 'area', title: 'Gradient Norm Over Timesteps', description: 'Comparing gradient flow: vanilla RNN vs. LSTM', interactive: true },
@@ -654,6 +747,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'LSTMs and their variants (GRUs, bidirectional LSTMs) were the dominant architecture for sequence modeling for over a decade. While Transformers have largely superseded them, understanding recurrence is fundamental to understanding sequential reasoning in modern models.',
+    conclusionRu: 'LSTM и их варианты (GRU, двунаправленные LSTM) были доминирующей архитектурой для моделирования последовательностей более десяти лет. Хотя трансформеры в основном вытеснили их, понимание рекуррентности необходимо для понимания последовательного рассуждения в современных моделях.',
     references: [
       { title: 'Long Short-Term Memory', authors: 'Hochreiter & Schmidhuber, 1997', url: 'https://www.bioinf.jku.at/publications/older/2604.pdf' },
       { title: 'Understanding LSTM Networks', authors: 'Christopher Olah, 2015', url: 'https://colah.github.io/posts/2015-08-Understanding-LSTMs/' },
@@ -664,13 +758,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'gan',
     title: 'Generative Adversarial Networks',
+    titleRu: 'Генеративно-состязательные сети',
     subtitle: 'Two Networks, One Game — Learning to Generate from Noise',
+    subtitleRu: 'Две сети, одна игра — обучение генерации из шума',
     authors: 'Jared Wilber',
     date: 'May 2024',
     thumbnail: '/thumbnails/thumbnail-gan.svg',
     sections: [
       {
         heading: 'The Minimax Game',
+        headingRu: 'Минимаксная игра',
         blocks: [
           { type: 'text', html: 'A GAN consists of two networks: a <strong>Generator</strong> G that creates fake data from noise, and a <strong>Discriminator</strong> D that tries to distinguish real from fake. They play a minimax game.' },
           { type: 'formula', math: '\\min_G \\max_D \\; V(D,G) = \\mathbb{E}_{x \\sim p_{data}}[\\log D(x)] + \\mathbb{E}_{z \\sim p_z}[\\log(1 - D(G(z)))]', label: 'GAN objective' },
@@ -680,6 +777,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Training Dynamics',
+        headingRu: 'Динамика обучения',
         blocks: [
           { type: 'chart', chart: 'line', title: 'Generator vs. Discriminator Loss', description: 'The adversarial training dynamics over epochs', interactive: true },
           { type: 'formula', math: 'D_{KL}(p_{data} \\| p_g) = \\sum_x p_{data}(x) \\log \\frac{p_{data}(x)}{p_g(x)}', label: 'KL Divergence (mode collapse measure)' },
@@ -691,6 +789,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'GANs sparked a revolution in generative AI — from StyleGAN faces to CycleGAN style transfer. Though diffusion models have overtaken them for image generation, the adversarial training paradigm remains influential in RLHF and AI safety.',
+    conclusionRu: 'GAN запустили революцию в генеративном ИИ — от лиц StyleGAN до переноса стиля CycleGAN. Хотя диффузионные модели обогнали их в генерации изображений, парадигма состязательного обучения остаётся влиятельной в RLHF и безопасности ИИ.',
     references: [
       { title: 'Generative Adversarial Nets', authors: 'Goodfellow et al., 2014', url: 'https://arxiv.org/abs/1406.2661' },
       { title: 'A Style-Based Generator Architecture for GANs', authors: 'Karras et al., 2018', url: 'https://arxiv.org/abs/1812.04948' },
@@ -701,13 +800,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'transformer',
     title: 'Transformers & Self-Attention',
+    titleRu: 'Трансформеры и самовнимание',
     subtitle: 'The Architecture Behind GPT, BERT, and Modern AI',
+    subtitleRu: 'Архитектура за GPT, BERT и современным ИИ',
     authors: 'Jared Wilber',
     date: 'June 2024',
     thumbnail: '/thumbnails/thumbnail-transformer.svg',
     sections: [
       {
         heading: 'Scaled Dot-Product Attention',
+        headingRu: 'Масштабированное внимание (dot-product)',
         blocks: [
           { type: 'text', html: 'The <strong>self-attention mechanism</strong> allows each token to attend to every other token in the sequence. Queries, Keys, and Values are computed via linear projections.' },
           { type: 'formula', math: '\\text{Attention}(Q, K, V) = \\text{softmax}\\!\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right) V', label: 'Scaled dot-product attention' },
@@ -717,6 +819,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'The Full Transformer Block',
+        headingRu: 'Полный блок трансформера',
         blocks: [
           { type: 'text', html: 'A Transformer block consists of <strong>multi-head self-attention</strong> followed by a <strong>feed-forward network</strong>, with <strong>layer normalization</strong> and <strong>residual connections</strong>.' },
           { type: 'formula', math: '\\text{FFN}(x) = \\max(0, xW_1 + b_1)W_2 + b_2', label: 'Feed-forward network (GeLU in practice)' },
@@ -726,6 +829,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Positional Encoding & Scaling',
+        headingRu: 'Позиционное кодирование и масштабирование',
         blocks: [
           { type: 'text', html: 'Unlike RNNs, Transformers have no inherent notion of order. <strong>Positional encodings</strong> inject sequence position information into the embeddings.' },
           { type: 'formula', math: 'PE_{(pos, 2i)} = \\sin\\!\\left(\\frac{pos}{10000^{2i/d_{model}}}\\right), \\quad PE_{(pos, 2i+1)} = \\cos\\!\\left(\\frac{pos}{10000^{2i/d_{model}}}\\right)', label: 'Sinusoidal positional encoding' },
@@ -737,6 +841,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'The Transformer architecture is the foundation of modern AI — powering GPT-4, Claude, Gemini, and virtually every state-of-the-art model. Its parallelizable self-attention mechanism made training on massive datasets feasible, ushering in the era of large language models.',
+    conclusionRu: 'Архитектура трансформера — основа современного ИИ, обеспечивающая GPT-4, Claude, Gemini и практически все передовые модели. Её параллелизуемый механизм самовнимания сделал возможным обучение на огромных наборах данных, открыв эру больших языковых моделей.',
     references: [
       { title: 'Attention Is All You Need', authors: 'Vaswani et al., 2017', url: 'https://arxiv.org/abs/1706.03762' },
       { title: 'Scaling Laws for Neural Language Models', authors: 'Kaplan et al., 2020', url: 'https://arxiv.org/abs/2001.08361' },
@@ -747,13 +852,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'autoencoder',
     title: 'Autoencoders & VAEs',
+    titleRu: 'Автоэнкодеры и VAE',
     subtitle: 'Learning Compressed Representations of Data',
+    subtitleRu: 'Обучение сжатых представлений данных',
     authors: 'Jared Wilber',
     date: 'July 2024',
     thumbnail: '/thumbnails/thumbnail-autoencoder.svg',
     sections: [
       {
         heading: 'The Encoder-Decoder Framework',
+        headingRu: 'Архитектура энкодер-декодер',
         blocks: [
           { type: 'text', html: 'An <strong>autoencoder</strong> learns to compress input data into a low-dimensional <strong>latent representation</strong>, then reconstruct it. The bottleneck forces the network to learn efficient encodings.' },
           { type: 'formula', math: 'z = f_{enc}(x), \\quad \\hat{x} = f_{dec}(z), \\quad L = \\|x - \\hat{x}\\|^2', label: 'Encode → Decode → Reconstruction loss' },
@@ -762,6 +870,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Variational Autoencoders (VAE)',
+        headingRu: 'Вариационные автоэнкодеры (VAE)',
         blocks: [
           { type: 'text', html: 'VAEs add a probabilistic twist: the encoder outputs a <strong>distribution</strong> (mean and variance) rather than a fixed vector. The <strong>reparameterization trick</strong> enables backpropagation through sampling.' },
           { type: 'formula', math: 'z = \\mu + \\sigma \\odot \\epsilon, \\quad \\epsilon \\sim \\mathcal{N}(0, I)', label: 'Reparameterization trick' },
@@ -773,6 +882,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'Autoencoders and VAEs are foundational to representation learning. VAEs in particular laid the groundwork for modern generative models, and their latent space interpretation remains a powerful tool for understanding learned representations.',
+    conclusionRu: 'Автоэнкодеры и VAE — основа обучения представлений. VAE, в частности, заложили фундамент современных генеративных моделей, а интерпретация их латентного пространства остаётся мощным инструментом анализа представлений.',
     references: [
       { title: 'Auto-Encoding Variational Bayes', authors: 'Kingma & Welling, 2013', url: 'https://arxiv.org/abs/1312.6114' },
     ],
@@ -782,13 +892,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'attention',
     title: 'Attention Mechanisms',
+    titleRu: 'Механизмы внимания',
     subtitle: 'From Bahdanau to Multi-Head — How Models Focus',
+    subtitleRu: 'От Бахданау до мультиголовочного внимания — как модели фокусируются',
     authors: 'Jared Wilber',
     date: 'August 2024',
     thumbnail: '/thumbnails/thumbnail-attention.svg',
     sections: [
       {
         heading: 'Additive (Bahdanau) Attention',
+        headingRu: 'Аддитивное внимание (Бахданау)',
         blocks: [
           { type: 'text', html: 'The original attention mechanism computes alignment scores between a decoder state and each encoder hidden state, producing a <strong>context vector</strong> as a weighted sum.' },
           { type: 'formula', math: 'e_{ij} = a(s_{i-1}, h_j), \\quad \\alpha_{ij} = \\frac{\\exp(e_{ij})}{\\sum_k \\exp(e_{ik})}, \\quad c_i = \\sum_j \\alpha_{ij} h_j', label: 'Bahdanau attention' },
@@ -797,6 +910,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Attention Variants',
+        headingRu: 'Варианты внимания',
         blocks: [
           { type: 'text', html: '<strong>Luong attention</strong> simplifies the score function to a dot product. <strong>Cross-attention</strong> lets one sequence attend to another. <strong>Causal (masked) attention</strong> prevents attending to future tokens — essential for autoregressive generation.' },
           { type: 'formula', math: '\\text{score}(Q, K) = \\begin{cases} QK^T / \\sqrt{d_k} & \\text{dot-product} \\\\ v^T \\tanh(W_1 Q + W_2 K) & \\text{additive} \\end{cases}', label: 'Attention score functions' },
@@ -808,6 +922,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'Attention is the key innovation that made Transformers possible. Understanding the evolution from additive to multi-head attention reveals how modern models process and reason about sequential information.',
+    conclusionRu: 'Внимание — ключевая инновация, сделавшая трансформеры возможными. Понимание эволюции от аддитивного до мультиголовочного внимания раскрывает, как современные модели обрабатывают последовательную информацию.',
     references: [
       { title: 'Neural Machine Translation by Jointly Learning to Align and Translate', authors: 'Bahdanau et al., 2014', url: 'https://arxiv.org/abs/1409.0473' },
       { title: 'FlashAttention: Fast and Memory-Efficient Attention', authors: 'Dao et al., 2022', url: 'https://arxiv.org/abs/2205.14135' },
@@ -818,13 +933,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'batch-norm',
     title: 'Batch Normalization',
+    titleRu: 'Пакетная нормализация',
     subtitle: 'Stabilizing and Accelerating Deep Network Training',
+    subtitleRu: 'Стабилизация и ускорение обучения глубоких сетей',
     authors: 'Jared Wilber',
     date: 'September 2024',
     thumbnail: '/thumbnails/thumbnail-batchnorm.svg',
     sections: [
       {
         heading: 'Internal Covariate Shift',
+        headingRu: 'Внутренний ковариативный сдвиг',
         blocks: [
           { type: 'text', html: 'As a deep network trains, the distribution of inputs to each layer changes — this <strong>internal covariate shift</strong> slows training. Batch Normalization fixes this by normalizing layer inputs.' },
           { type: 'formula', math: '\\hat{x}_i = \\frac{x_i - \\mu_B}{\\sqrt{\\sigma_B^2 + \\epsilon}}, \\quad y_i = \\gamma \\hat{x}_i + \\beta', label: 'Batch normalization' },
@@ -833,6 +951,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Effects on Training',
+        headingRu: 'Влияние на обучение',
         blocks: [
           { type: 'chart', chart: 'line', title: 'Training Loss: With vs. Without BatchNorm', description: 'How BatchNorm accelerates convergence', interactive: true },
           { type: 'chart', chart: 'area', title: 'Activation Distribution Across Layers', description: 'How BatchNorm keeps activations well-distributed', interactive: true },
@@ -844,6 +963,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'Batch Normalization is one of the most impactful innovations in deep learning. While Layer Norm has become standard for Transformers, BatchNorm remains essential for CNNs and many other architectures.',
+    conclusionRu: 'Пакетная нормализация — одна из самых влиятельных инноваций в глубоком обучении. Хотя LayerNorm стал стандартом для трансформеров, BatchNorm остаётся незаменимым для CNN и многих других архитектур.',
     references: [
       { title: 'Batch Normalization: Accelerating Deep Network Training', authors: 'Ioffe & Szegedy, 2015', url: 'https://arxiv.org/abs/1502.03167' },
     ],
@@ -853,13 +973,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'dropout',
     title: 'Dropout & Regularization',
+    titleRu: 'Dropout и регуляризация',
     subtitle: 'Preventing Overfitting in Deep Neural Networks',
+    subtitleRu: 'Предотвращение переобучения в глубоких нейросетях',
     authors: 'Jared Wilber',
     date: 'October 2024',
     thumbnail: '/thumbnails/thumbnail-dropout.svg',
     sections: [
       {
         heading: 'The Dropout Mechanism',
+        headingRu: 'Механизм dropout',
         blocks: [
           { type: 'text', html: '<strong>Dropout</strong> randomly zeroes a fraction of neuron outputs during training. This prevents co-adaptation and forces the network to learn robust, distributed representations.' },
           { type: 'formula', math: '\\hat{h}_i = r_i \\cdot h_i, \\quad r_i \\sim \\text{Bernoulli}(p)', label: 'Dropout mask' },
@@ -869,6 +992,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Regularization Techniques',
+        headingRu: 'Методы регуляризации',
         blocks: [
           { type: 'text', html: 'Beyond dropout, deep learning uses <strong>L2 weight decay</strong>, <strong>data augmentation</strong>, <strong>early stopping</strong>, and <strong>label smoothing</strong> to combat overfitting.' },
           { type: 'formula', math: 'L_{reg} = L + \\frac{\\lambda}{2} \\|w\\|^2', label: 'L2 regularization (weight decay)' },
@@ -880,6 +1004,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'Dropout remains one of the simplest and most effective regularization techniques. Combined with weight decay and data augmentation, it forms the regularization backbone of most deep learning systems.',
+    conclusionRu: 'Dropout остаётся одним из простейших и эффективнейших методов регуляризации. В сочетании с weight decay и аугментацией данных он составляет регуляризационную основу большинства систем глубокого обучения.',
     references: [
       { title: 'Dropout: A Simple Way to Prevent Neural Networks from Overfitting', authors: 'Srivastava et al., 2014', url: 'https://jmlr.org/papers/v15/srivastava14a.html' },
     ],
@@ -889,13 +1014,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'transfer-learning',
     title: 'Transfer Learning',
+    titleRu: 'Перенос обучения',
     subtitle: 'Leveraging Pretrained Models for New Tasks',
+    subtitleRu: 'Использование предобученных моделей для новых задач',
     authors: 'Jared Wilber',
     date: 'November 2024',
     thumbnail: '/thumbnails/thumbnail-transfer.svg',
     sections: [
       {
         heading: 'Why Transfer Learning Works',
+        headingRu: 'Почему перенос обучения работает',
         blocks: [
           { type: 'text', html: '<strong>Transfer learning</strong> reuses a model trained on a large source dataset (e.g., ImageNet) as the starting point for a different but related target task. The pretrained features are often generalizable.' },
           { type: 'chart', chart: 'architecture', title: 'Transfer Learning Pipeline', description: 'Pretrain on source → Fine-tune on target', interactive: true },
@@ -905,6 +1033,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Modern Transfer Learning: Foundation Models',
+        headingRu: 'Современный перенос обучения: базовые модели',
         blocks: [
           { type: 'text', html: 'Modern NLP and vision are dominated by <strong>foundation models</strong> — large models pretrained on diverse data and adapted via fine-tuning or prompting.' },
           { type: 'chart', chart: 'bar', title: 'Performance: From Scratch vs. Pretrained', description: 'How transfer learning boosts performance with less data', interactive: true },
@@ -916,6 +1045,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'Transfer learning has democratized deep learning — enabling practitioners to achieve state-of-the-art results with minimal data and compute. Foundation models like GPT, BERT, and CLIP have made pretrained representations the default starting point.',
+    conclusionRu: 'Перенос обучения демократизировал глубокое обучение — позволив достигать передовых результатов с минимальными данными и вычислениями. Базовые модели вроде GPT, BERT и CLIP сделали предобученные представления стандартной отправной точкой.',
     references: [
       { title: 'How transferable are features in deep neural networks?', authors: 'Yosinski et al., 2014', url: 'https://arxiv.org/abs/1411.1792' },
       { title: 'LoRA: Low-Rank Adaptation of Large Language Models', authors: 'Hu et al., 2021', url: 'https://arxiv.org/abs/2106.09685' },
@@ -926,13 +1056,16 @@ export const chapters: ArticleChapter[] = [
   {
     slug: 'vanishing-gradients',
     title: 'Vanishing & Exploding Gradients',
+    titleRu: 'Затухающие и взрывающиеся градиенты',
     subtitle: 'The Optimization Challenges of Deep Networks',
+    subtitleRu: 'Проблемы оптимизации глубоких сетей',
     authors: 'Jared Wilber',
     date: 'December 2024',
     thumbnail: '/thumbnails/thumbnail-gradients.svg',
     sections: [
       {
         heading: 'The Problem',
+        headingRu: 'Проблема',
         blocks: [
           { type: 'text', html: 'During backpropagation through deep or recurrent networks, gradients are <strong>multiplied</strong> at each layer. If weights are small, gradients shrink exponentially (<strong>vanishing</strong>). If large, they grow (<strong>exploding</strong>).' },
           { type: 'formula', math: '\\frac{\\partial L}{\\partial w_1} = \\frac{\\partial L}{\\partial h_L} \\cdot \\prod_{l=2}^{L} \\frac{\\partial h_l}{\\partial h_{l-1}} \\cdot \\frac{\\partial h_1}{\\partial w_1}', label: 'Chain rule through L layers' },
@@ -941,6 +1074,7 @@ export const chapters: ArticleChapter[] = [
       },
       {
         heading: 'Solutions',
+        headingRu: 'Решения',
         blocks: [
           { type: 'text', html: 'Several innovations address this: <strong>ReLU activations</strong> (avoid sigmoid saturation), <strong>residual/skip connections</strong> (gradient highway), <strong>BatchNorm</strong> (normalize activations), <strong>gradient clipping</strong> (cap exploding gradients), and careful <strong>initialization</strong>.' },
           { type: 'formula', math: 'h_l = h_{l-1} + F(h_{l-1}) \\quad \\Rightarrow \\quad \\frac{\\partial h_L}{\\partial h_l} = 1 + \\frac{\\partial}{\\partial h_l}\\sum_{k=l}^{L-1} F(h_k)', label: 'Residual connection: gradient always ≥ 1' },
@@ -953,6 +1087,7 @@ export const chapters: ArticleChapter[] = [
       },
     ],
     conclusion: 'The vanishing/exploding gradient problem was the central obstacle to training deep networks. The solutions — ReLU, skip connections, normalization, and careful initialization — are the building blocks of every modern architecture.',
+    conclusionRu: 'Проблема затухающих/взрывающихся градиентов была главным препятствием в обучении глубоких сетей. Решения — ReLU, skip-connections, нормализация и аккуратная инициализация — являются строительными блоками каждой современной архитектуры.',
     references: [
       { title: 'On the difficulty of training recurrent neural networks', authors: 'Pascanu, Mikolov, Bengio, 2013', url: 'https://arxiv.org/abs/1211.5063' },
       { title: 'Deep Residual Learning for Image Recognition', authors: 'He et al., 2015', url: 'https://arxiv.org/abs/1512.03385' },

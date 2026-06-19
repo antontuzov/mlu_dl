@@ -36,7 +36,10 @@ export const translations = {
     interactiveViz: 'Interactive visualization',
     // Footer
     madeWith: 'Made with',
-    byTeam: 'by MLU Team',
+    byTeam: 'by Основы ML Team',
+    // App name
+    appName: 'Основы ML',
+    appTagline: 'Базовый курс анализа',
     // Dive In button
     diveIn: 'Dive In',
   },
@@ -73,7 +76,10 @@ export const translations = {
     interactiveViz: 'Интерактивная визуализация',
     // Footer
     madeWith: 'Сделано с',
-    byTeam: 'командой MLU',
+    byTeam: 'Основы ML',
+    // App name
+    appName: 'Основы ML',
+    appTagline: 'Базовый курс анализа',
     // Dive In button
     diveIn: 'Читать',
   },

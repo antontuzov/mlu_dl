@@ -19,7 +19,7 @@ const cardVariants = {
 }
 
 export default function Landing() {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const mlArticles = chapters.slice(0, 14)
   const dlArticles = chapters.slice(14)
 
@@ -84,9 +84,9 @@ export default function Landing() {
                           </span>
                         </div>
                         <h3 className="text-lg font-bold text-gray-800 group-hover:text-accent-700 transition-colors leading-tight mb-2">
-                          {article.title}
+                          {lang === 'ru' ? article.titleRu : article.title}
                         </h3>
-                        <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">{article.subtitle}</p>
+                        <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">{lang === 'ru' ? article.subtitleRu : article.subtitle}</p>
                         <div className="mt-4 flex items-center gap-2 text-sm font-semibold text-primary-600 group-hover:text-accent-600 transition-colors">
                           <span>{t('diveIn')}</span>
                           <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
@@ -146,9 +146,9 @@ export default function Landing() {
                           </span>
                         </div>
                         <h3 className="text-lg font-bold text-gray-800 group-hover:text-accent-700 transition-colors leading-tight mb-2">
-                          {article.title}
+                          {lang === 'ru' ? article.titleRu : article.title}
                         </h3>
-                        <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">{article.subtitle}</p>
+                        <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">{lang === 'ru' ? article.subtitleRu : article.subtitle}</p>
                         <div className="mt-4 flex items-center gap-2 text-sm font-semibold text-primary-600 group-hover:text-accent-600 transition-colors">
                           <span>{t('diveIn')}</span>
                           <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
