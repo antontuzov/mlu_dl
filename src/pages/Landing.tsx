@@ -7,7 +7,7 @@ import { articleIcons } from '../components/icons/ArticleIcons'
 import { ArrowRight } from 'lucide-react'
 import { useLang } from '../context/LanguageContext'
 
-const BASE = 'https://mlu-explain.github.io/assets'
+
 
 const cardVariants = {
   hidden: { opacity: 0, y: 40 },

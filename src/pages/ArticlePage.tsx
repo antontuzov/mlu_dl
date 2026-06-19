@@ -9,9 +9,9 @@ import {
   AreaChart, Area, ReferenceLine, Cell,
 } from 'recharts'
 import MathBlock from '../components/MathBlock'
-import InfoTooltip from '../components/InfoTooltip'
+
 import Footer from '../components/Footer'
-import { getChapter, type ContentBlock, type ArticleChapter } from '../data/articles'
+import { getChapter, type ContentBlock } from '../data/articles'
 import { useLang } from '../context/LanguageContext'
 
 /* ------------------------------------------------------------------ */
