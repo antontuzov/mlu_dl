@@ -20,8 +20,11 @@ const cardVariants = {
 
 export default function Landing() {
   const { t, lang } = useLang()
-  const mlArticles = chapters.slice(0, 14)
-  const dlArticles = chapters.slice(14)
+  // ML articles: original 1-14 + new ML topics (KNN, Gradient Boosting, Hyperparam Tuning, Naive Bayes, Clustering, Time Series, Ranking)
+  // DL articles: original 15-24 + new DL topics (GNN, Diffusion, LLM, Recommender, Knowledge Distillation)
+  const mlSlugs = new Set(['neural-networks','equality-of-odds','logistic-regression','linear-regression','reinforcement-learning','roc-auc','cross-validation','train-test-validation','precision-recall','random-forest','decision-trees','bias-variance','double-descent','double-descent-2','knn','gradient-boosting','hyperparameter-tuning','naive-bayes','clustering','time-series','ranking'])
+  const mlArticles = chapters.filter(c => mlSlugs.has(c.slug))
+  const dlArticles = chapters.filter(c => !mlSlugs.has(c.slug))
 
   return (
     <div className="min-h-screen">
