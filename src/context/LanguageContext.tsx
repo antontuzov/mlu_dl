@@ -36,10 +36,10 @@ export const translations = {
     interactiveViz: 'Interactive visualization',
     // Footer
     madeWith: 'Made with',
-    byTeam: 'by Основы ML Team',
+    byTeam: 'by ML Fundamentals Team',
     // App name
-    appName: 'Основы ML',
-    appTagline: 'Базовый курс анализа',
+    appName: 'ML Fundamentals',
+    appTagline: 'A Basic Course in Analysis',
     // Dive In button
     diveIn: 'Dive In',
   },

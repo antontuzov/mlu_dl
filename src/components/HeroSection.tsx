@@ -9,7 +9,7 @@ export default function HeroSection() {
   const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '40%'])
   const textY = useTransform(scrollYProgress, [0, 1], ['0%', '20%'])
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0])
-  const { t } = useLang()
+  const { t, lang } = useLang()
 
   return (
     <section ref={ref} className="relative min-h-screen flex items-center justify-center hero-gradient overflow-hidden">
@@ -30,7 +30,7 @@ export default function HeroSection() {
 
         {/* Heading */}
         <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[0.95] mb-6">
-          <span className="text-gray-900">Основы</span><span className="text-gradient"> ML</span>
+          <span className="text-gray-900">{lang === 'ru' ? 'Основы' : 'ML'}</span><span className="text-gradient">{lang === 'ru' ? ' ML' : ' Fundamentals'}</span>
         </motion.h1>
 
         <motion.p initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.15 }} className="text-xl md:text-2xl text-primary-600 font-semibold mb-3">
@@ -53,7 +53,7 @@ export default function HeroSection() {
         {/* Mascot */}
         <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.5, type: 'spring' }} className="mt-16 flex justify-center">
           <motion.div animate={{ y: [0, -12, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }} className="relative">
-            <img src="/favicon.svg" alt="Основы ML" className="w-48 h-48 md:w-56 md:h-56 object-contain drop-shadow-2xl" />
+            <img src="/favicon.svg" alt={t('appName')} className="w-48 h-48 md:w-56 md:h-56 object-contain drop-shadow-2xl" />
             <div className="absolute inset-0 -z-10 bg-accent-400/20 rounded-full blur-2xl scale-150" />
           </motion.div>
         </motion.div>

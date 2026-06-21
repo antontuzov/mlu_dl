@@ -50,7 +50,7 @@ export default function Navbar() {
             <LogoIcon />
           </motion.div>
           <span className="text-xl font-bold tracking-tight">
-            <span className="text-gray-800">Основы</span><span className="text-primary-500"> ML</span>
+            <span className="text-gray-800">{lang === 'ru' ? 'Основы' : 'ML'}</span><span className="text-primary-500">{lang === 'ru' ? ' ML' : ' Fundamentals'}</span>
           </span>
         </Link>
 
