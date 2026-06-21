@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+  </defs>
+  <rect width="400" height="225" fill="url(#bg)"/>
+  
+  <text x="200" y="35" fill="white" opacity="0.5" font-size="14" text-anchor="middle" font-family="serif" font-style="italic">W ~ N(0, 2/n)</text>
+  <path d="M60,170 Q100,170 140,160 Q170,130 200,80 Q230,130 260,160 Q300,170 340,170" fill="none" stroke="white" stroke-width="2.5" opacity="0.7"/>
+  <path d="M100,170 Q130,170 155,160 Q175,140 200,110 Q225,140 245,160 Q270,170 300,170" fill="none" stroke="#fbbf24" stroke-width="2" opacity="0.6"/>
+  <line x1="60" y1="170" x2="340" y2="170" stroke="white" stroke-width="1" opacity="0.3"/>
+  <text x="250" y="210" fill="white" opacity="0.2" font-family="monospace" font-size="16" font-weight="bold">XAVIER/HE</text>
+</svg>

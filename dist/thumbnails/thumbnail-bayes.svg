@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#059669"/></linearGradient>
+  </defs>
+  <rect width="400" height="225" fill="url(#bg)"/>
+  
+  <path d="M40,180 Q100,180 130,120 Q160,40 190,120 Q220,180 260,180" fill="none" stroke="white" stroke-width="3" opacity="0.6"/>
+  <path d="M140,180 Q200,180 230,100 Q260,30 290,100 Q320,180 380,180" fill="none" stroke="#fbbf24" stroke-width="3" opacity="0.7"/>
+  <text x="60" y="50" fill="white" opacity="0.4" font-family="serif" font-size="22" font-style="italic">P(A|B) = P(B|A)·P(A) / P(B)</text>
+  <text x="270" y="210" fill="white" opacity="0.2" font-family="monospace" font-size="18" font-weight="bold">BAYES</text>
+</svg>

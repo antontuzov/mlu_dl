@@ -1595,6 +1595,259 @@ export const chapters: ArticleChapter[] = [
       { title: 'Дистилляция знаний (Хендбук Яндекса по ML)', authors: 'Яндекс Практикум', url: 'https://education.yandex.ru/handbook/ml/article/distillyaciya-znanij' },
     ],
   },
+
+  /* ---- 37. Optimization in ML ---- */
+  {
+    slug: 'optimization',
+    title: 'Optimization in Machine Learning',
+    titleRu: 'Оптимизация в машинном обучении',
+    subtitle: 'From Gradient Descent to Adam and Beyond',
+    subtitleRu: 'От градиентного спуска до Adam и далее',
+    authors: 'Yandex ML Handbook',
+    date: 'June 2026',
+    thumbnail: '/thumbnails/thumbnail-optimization.svg',
+    sections: [
+      {
+        heading: 'Gradient Descent (GD)',
+        headingRu: 'Градиентный спуск (GD)',
+        blocks: [
+          { type: 'text', html: 'Gradient descent finds the minimum of a function by iteratively moving in the direction of steepest descent — the <strong>negative gradient</strong>. The step size is controlled by the <strong>learning rate</strong> η.', htmlRu: 'Градиентный спуск находит минимум функции, итеративно двигаясь в направлении наискорейшего убывания — <strong>антиградиенту</strong>. Размер шага контролируется <strong>темпом обучения</strong> η.' },
+          { type: 'formula', math: 'w_{t+1} = w_t - \eta \nabla L(w_t)', label: 'Gradient descent update', labelRu: 'Обновление градиентного спуска' },
+          { type: 'definition', title: 'Convexity', titleRu: 'Выпуклость', math: 'f(\lambda x + (1-\lambda)y) \leq \lambda f(x) + (1-\lambda) f(y)', note: 'For convex functions, any local minimum is also global. Linear regression with MSE is convex; neural network loss is not.', noteRu: 'Для выпуклых функций любой локальный минимум является глобальным. Линейная регрессия с MSE выпукла; функция потерь нейронной сети — нет.' },
+          { type: 'info', variant: 'accent', text: 'Convergence rate for convex case: O(1/T) steps. For smooth + strongly convex: O(κ log(1/ε)) where κ is the condition number. For non-convex: O(1/ε²) to reach ‖∇f‖ ≤ ε.', textRu: 'Скорость сходимости для выпуклого случая: O(1/T) шагов. Для гладкого + сильно выпуклого: O(κ log(1/ε)), где κ — число обусловленности. Для невыпуклого: O(1/ε²) для достижения ‖∇f‖ ≤ ε.' },
+        ],
+      },
+      {
+        heading: 'Stochastic Gradient Descent (SGD)',
+        headingRu: 'Стохастический градиентный спуск (SGD)',
+        blocks: [
+          { type: 'text', html: 'Instead of computing gradients over the entire dataset, <strong>SGD</strong> uses random mini-batches, making training feasible on large datasets. The gradient is estimated as an unbiased Monte Carlo sample.', htmlRu: 'Вместо вычисления градиентов по всему набору данных <strong>SGD</strong> использует случайные мини-батчи, что делает обучение возможным на больших данных. Градиент оценивается как несмещённая оценка Монте-Карло.' },
+          { type: 'formula', math: 'w_{t+1} = w_t - \eta \cdot \frac{1}{|B|} \sum_{i \in B} \nabla \ell_i(w_t)', label: 'SGD update with mini-batch B', labelRu: 'Обновление SGD с мини-батчом B' },
+          { type: 'info', variant: 'emerald', text: 'Larger batches give lower-variance gradient estimates but may lead to sharper minima that generalize worse. The "generalization gap" phenomenon shows that very large batches can hurt test accuracy.', textRu: 'Большие батчи дают оценки градиента с меньшей дисперсией, но могут приводить к более острым минимумам, которые хуже обобщаются. Феномен «разрыва обобщения» показывает, что очень большие батчи могут ухудшить качество на тесте.' },
+        ],
+      },
+      {
+        heading: 'Momentum & Nesterov Acceleration',
+        headingRu: 'Момент и ускорение Нестерова',
+        blocks: [
+          { type: 'text', html: 'Momentum accumulates a "velocity" vector that smooths the optimization trajectory, helping escape shallow local minima and saddle points. Think of a ball rolling down a hill with inertia.', htmlRu: 'Момент накапливает вектор «скорости», сглаживающий траекторию оптимизации, помогая выйти из мелких локальных минимумов и седловых точек. Представьте мяч, катящийся с горы с инерцией.' },
+          { type: 'formula', math: 'v_{t+1} = \mu v_t + \eta \nabla L(w_t), \quad w_{t+1} = w_t - v_{t+1}', label: 'Classical momentum', labelRu: 'Классический момент' },
+          { type: 'text', html: '<strong>Nesterov momentum</strong> evaluates the gradient at the "lookahead" position, giving better theoretical convergence for convex problems: O(√κ log(1/ε)) vs O(κ log(1/ε)) for plain GD.', htmlRu: '<strong>Момент Нестерова</strong> вычисляет градиент в «опережающей» позиции, давая лучшую теоретическую сходимость для выпуклых задач: O(√κ log(1/ε)) против O(κ log(1/ε)) для обычного GD.' },
+          { type: 'formula', math: 'v_{t+1} = \mu v_t + \eta \nabla L(w_t - \mu v_t), \quad w_{t+1} = w_t - v_{t+1}', label: 'Nesterov momentum', labelRu: 'Момент Нестерова' },
+        ],
+      },
+      {
+        heading: 'Adaptive Learning Rates: AdaGrad → RMSProp → Adam',
+        headingRu: 'Адаптивные темпы обучения: AdaGrad → RMSProp → Adam',
+        blocks: [
+          { type: 'text', html: '<strong>AdaGrad</strong> divides the learning rate per-parameter by the square root of the sum of historical squared gradients. It works well for sparse features but the learning rate may shrink too fast.', htmlRu: '<strong>AdaGrad</strong> делит темп обучения по каждому параметру на корень из суммы исторических квадратов градиентов. Хорошо работает для разреженных признаков, но темп обучения может уменьшаться слишком быстро.' },
+          { type: 'text', html: '<strong>RMSProp</strong> fixes AdaGrad\'s aggressive decay by using an exponential moving average of squared gradients instead of a cumulative sum.', htmlRu: '<strong>RMSProp</strong> исправляет агрессивное затухание AdaGrad, используя экспоненциальное скользящее среднее квадратов градиентов вместо кумулятивной суммы.' },
+          { type: 'formula', math: 'v_t = \beta_2 v_{t-1} + (1-\beta_2) g_t^2, \quad w_{t+1} = w_t - \frac{\eta}{\sqrt{v_t} + \varepsilon} g_t', label: 'RMSProp update', labelRu: 'Обновление RMSProp' },
+          { type: 'text', html: '<strong>Adam</strong> (ADAptive Momentum) combines momentum and RMSProp: it tracks both a first-moment estimate (mean) and a second-moment estimate (variance) of the gradients.', htmlRu: '<strong>Adam</strong> (ADAptive Momentum) объединяет момент и RMSProp: отслеживает оценку первого момента (среднее) и оценку второго момента (дисперсию) градиентов.' },
+          { type: 'formula', math: 'm_t = \beta_1 m_{t-1} + (1-\beta_1)g_t, \quad v_t = \beta_2 v_{t-1} + (1-\beta_2)g_t^2', label: 'Adam: first and second moment estimates', labelRu: 'Adam: оценки первого и второго моментов' },
+          { type: 'info', variant: 'accent', text: 'Default Adam hyperparameters: β₁=0.9, β₂=0.999, ε=1e-8. The learning rate is the main tuning parameter. A common starting point is lr=3e-4 ("Karpathy constant").', textRu: 'Гиперпараметры Adam по умолчанию: β₁=0.9, β₂=0.999, ε=1e-8. Темп обучения — основной параметр для настройки. Распространённое начальное значение: lr=3e-4 («константа Карпати»).' },
+        ],
+      },
+      {
+        heading: 'AdamW, SWA & Practical Tips',
+        headingRu: 'AdamW, SWA и практические советы',
+        blocks: [
+          { type: 'text', html: '<strong>AdamW</strong> decouples weight decay from the adaptive gradient update, applying L2 regularization directly to weights. This improves generalization compared to standard Adam.', htmlRu: '<strong>AdamW</strong> разделяет затухание весов и адаптивное обновление градиента, применяя L2-регуляризацию напрямую к весам. Это улучшает обобщающую способность по сравнению со стандартным Adam.' },
+          { type: 'formula', math: 'w_{t+1} = w_t - \eta(\hat{m}_t / (\sqrt{\hat{v}_t} + \varepsilon) + \lambda w_t)', label: 'AdamW: decoupled weight decay', labelRu: 'AdamW: развязанное затухание весов' },
+          { type: 'text', html: '<strong>Stochastic Weight Averaging (SWA)</strong> averages model weights across training epochs, finding wider minima that generalize better. Simply average weights from epoch checkpoints.', htmlRu: '<strong>Усреднение стохастических весов (SWA)</strong> усредняет веса модели по эпохам обучения, находя более широкие минимумы, которые лучше обобщаются. Просто усредняйте веса из чекпоинтов эпох.' },
+          { type: 'text', html: '<strong>Learning rate schedules</strong>: warmup + cosine decay is widely used (especially for transformers). LARS/LAMB optimizers enable training with very large batch sizes across multiple GPUs.', htmlRu: '<strong>Расписания темпа обучения</strong>: warmup + косинусное затухание широко используется (особенно для трансформеров). Оптимизаторы LARS/LAMB позволяют обучение с очень большими батчами на нескольких GPU.' },
+          { type: 'info', variant: 'emerald', text: 'Key insight from the Yandex ML Handbook: in non-convex optimization, SGD often converges to "wide" minima that generalize well, while large-batch optimizers tend toward sharp minima. SWA helps recover wide minima regardless of batch size.', textRu: 'Ключевой инсайт из Хендбука Яндекса по ML: в невыпуклой оптимизации SGD часто сходится к «широким» минимумам, которые хорошо обобщаются, тогда как оптимизаторы с большими батчами склонны к острым минимумам. SWA помогает найти широкий минимум независимо от размера батча.' },
+        ],
+      },
+    ],
+    conclusion: 'Optimization is the engine of machine learning. From vanilla GD through SGD with momentum to adaptive methods like Adam and AdamW, each algorithm makes trade-offs between convergence speed, stability, and generalization. Modern techniques like SWA, warmup schedules, and layer-wise adaptation (LARS/LAMB) push the boundaries further.',
+    conclusionRu: 'Оптимизация — двигатель машинного обучения. От простого GD через SGD с моментом до адаптивных методов Adam и AdamW — каждый алгоритм балансирует между скоростью сходимости, стабильностью и обобщением. Современные методы SWA, расписания warmup и послойная адаптация (LARS/LAMB) раздвигают границы возможного.',
+    references: [
+      { title: 'Adam: A Method for Stochastic Optimization', authors: 'Kingma, Ba, 2014', url: 'https://arxiv.org/abs/1412.6980' },
+      { title: 'Averaging Weights Leads to Wider Optima and Better Generalization', authors: 'Izmailov et al., 2018 (SWA)', url: 'https://arxiv.org/abs/1803.05407' },
+      { title: 'Оптимизация в ML (Хендбук Яндекса по ML)', authors: 'Яндекс Практикум', url: 'https://education.yandex.ru/handbook/ml/article/optimizaciya-v-ml' },
+    ],
+  },
+
+  /* ---- 38. Representation Learning ---- */
+  {
+    slug: 'representation-learning',
+    title: 'Representation Learning',
+    titleRu: 'Обучение представлений',
+    subtitle: 'Self-Supervised Learning, Contrastive Methods & Transfer Strategies',
+    subtitleRu: 'Самообучение, контрастные методы и стратегии переноса',
+    authors: 'Yandex ML Handbook',
+    date: 'June 2026',
+    thumbnail: '/thumbnails/thumbnail-representation.svg',
+    sections: [
+      {
+        heading: 'What Are Representations?',
+        headingRu: 'Что такое представления?',
+        blocks: [
+          { type: 'text', html: 'Real-world data (images, audio, text) consists of thousands or millions of low-level signals. <strong>Representation learning</strong> transforms raw data into compact, informative feature vectors suitable for downstream tasks like search, classification, or recommendation.', htmlRu: 'Реальные данные (изображения, аудио, текст) состоят из тысяч или миллионов низкоуровневых сигналов. <strong>Обучение представлений</strong> преобразует сырые данные в компактные информативные векторы признаков, подходящие для решения задач поиска, классификации или рекомендаций.' },
+          { type: 'definition', title: 'Representation', titleRu: 'Представление', math: 'f_\theta: \mathcal{X} \to \mathbb{R}^d, \quad d \ll \dim(x)', note: 'A learned mapping from high-dimensional input space to a low-dimensional embedding. Activations of intermediate layers of a neural network serve as representations.', noteRu: 'Обученное отображение из высокоразмерного входного пространства в низкоразмерное вложение. Активации промежуточных слоёв нейронной сети служат представлениями.' },
+          { type: 'text', html: 'In CNNs, early layers capture low-level features (edges, textures), while deeper layers respond to high-level abstractions (objects, faces). The receptive field grows with depth.', htmlRu: 'В CNN ранние слои захватывают низкоуровневые признаки (края, текстуры), а глубокие слои реагируют на высокоуровневые абстракции (объекты, лица). Рецептивное поле растёт с глубиной.' },
+        ],
+      },
+      {
+        heading: 'Supervised Pretraining & Fine-Tuning',
+        headingRu: 'Обучение с учителем и файнтюнинг',
+        blocks: [
+          { type: 'text', html: 'The classic pipeline: (1) pretrain on a large labeled dataset (e.g., ImageNet for images, The Pile for text), (2) optionally fine-tune on a smaller task-specific dataset, (3) use the learned representations as features or weights for the downstream task.', htmlRu: 'Классический пайплайн: (1) предобучение на большом размеченном датасете (ImageNet для изображений, The Pile для текста), (2) опциональный файнтюнинг на меньшем целевом датасете, (3) использование выученных представлений как признаков или весов для целевой задачи.' },
+          { type: 'text', html: 'Fine-tuning strategies include: freezing pretrained layers, gradually unfreezing, using <strong>warmup</strong> learning rate schedules, and adding new task-specific heads. Big Transfer (BiT) showed that scaling both data and model size together improves transfer quality.', htmlRu: 'Стратегии файнтюнинга: заморозка предобученных слоёв, постепенная разморозка, использование расписаний темпа обучения с <strong>warmup</strong> и добавление новых головок для конкретных задач. Big Transfer (BiT) показал, что совместное масштабирование данных и модели улучшает качество переноса.' },
+        ],
+      },
+      {
+        heading: 'Triplet Loss & Metric Learning',
+        headingRu: 'Триплетные потери и обучение метрик',
+        blocks: [
+          { type: 'text', html: '<strong>Triplet loss</strong> (Schroff et al., 2015) trains embeddings where similar objects are close and dissimilar objects are far apart in the embedding space, using anchor-positive-negative triplets.', htmlRu: '<strong>Триплетные потери</strong> (Schroff et al., 2015) обучают вложения, где похожие объекты близки, а непохожие — далеки в пространстве вложений, используя тройки якорь-позитив-негатив.' },
+          { type: 'formula', math: '\mathcal{L} = \max\bigl(0,\; \|f(x_a) - f(x_p)\|^2 - \|f(x_a) - f(x_n)\|^2 + \alpha\bigr)', label: 'Triplet loss with margin α', labelRu: 'Триплетные потери с зазором α' },
+          { type: 'info', variant: 'amber', text: 'Hard negative mining is critical: random triplets are often too easy. Select negatives closest to the anchor (hardest negatives) to maximize the learning signal.', textRu: 'Поиск сложных негативов критичен: случайные тройки часто слишком просты. Выбирайте негативы, ближайшие к якорю (самые сложные), для максимизации обучающего сигнала.' },
+        ],
+      },
+      {
+        heading: 'Self-Supervised Learning',
+        headingRu: 'Самообучение (Self-Supervised Learning)',
+        blocks: [
+          { type: 'text', html: '<strong>Self-supervised learning</strong> creates synthetic supervision signals from the data itself, eliminating the need for manual labels. Pretext tasks include: predicting masked words (BERT), solving jigsaw puzzles, colorizing grayscale images, and predicting future video frames.', htmlRu: '<strong>Самообучение</strong> создаёт синтетические сигналы надзора из самих данных, устраняя необходимость ручной разметки. Вспомогательные задачи: предсказание замаскированных слов (BERT), решение головоломок, раскрашивание чёрно-белых изображений и предсказание будущих кадров видео.' },
+          { type: 'definition', title: 'Self-Supervised Paradigm', titleRu: 'Парадигма самообучения', math: '\text{pretext task: } x \to y_{\text{synthetic}}, \quad \text{where } y \text{ is derived from } x \text{ itself}', note: 'The key idea: learn representations by solving pretext tasks where the "label" comes from the data structure. These representations transfer to downstream tasks with 100× fewer labeled examples.', noteRu: 'Ключевая идея: обучать представления, решая вспомогательные задачи, где «метка» извлекается из структуры данных. Эти представления переносятся на целевые задачи со в 100× меньшим числом размеченных примеров.' },
+        ],
+      },
+      {
+        heading: 'SimCLR & Contrastive Learning',
+        headingRu: 'SimCLR и контрастное обучение',
+        blocks: [
+          { type: 'text', html: '<strong>SimCLR</strong> (Chen et al., 2020) generates two augmented views of each image, then trains the model to recognize that these views come from the same image while pushing apart views of different images.', htmlRu: '<strong>SimCLR</strong> (Chen et al., 2020) генерирует два аугментированных вида каждого изображения, затем обучает модель распознавать, что эти виды происходят от одного изображения, одновременно отталкивая виды разных изображений.' },
+          { type: 'formula', math: '\mathcal{L}_{\text{NT-Xent}} = -\log \frac{\exp(\text{sim}(z_i, z_j)/\tau)}{\sum_{k \neq i} \exp(\text{sim}(z_i, z_k)/\tau)}', label: 'NT-Xent (contrastive) loss', labelRu: 'Потери NT-Xent (контрастные)' },
+          { type: 'text', html: 'Key components: (1) data augmentation pipeline (crop, flip, color distortion, blur), (2) neural network encoder f(·), (3) projection head g(·) where the loss is computed, (4) large batch sizes (2048+) for sufficient negative examples.', htmlRu: 'Ключевые компоненты: (1) пайплайн аугментации данных (обрезка, отражение, искажение цвета, размытие), (2) энкодер f(·), (3) проекционная головка g(·), где вычисляются потери, (4) большие батчи (2048+) для достаточного числа негативных примеров.' },
+          { type: 'info', variant: 'emerald', text: 'SimCLR demonstrated that self-supervised pretraining can match supervised pretraining quality with 100× fewer labeled examples. Vision Transformers use BERT-style masked patch prediction for self-supervised learning on images.', textRu: 'SimCLR продемонстрировал, что самообучение может сравниться по качеству с обучением с учителем при в 100× меньшем числе размеченных примеров. Vision Transformers используют BERT-подобное предсказание замаскированных патчей для самообучения на изображениях.' },
+        ],
+      },
+    ],
+    conclusion: 'Representation learning bridges raw data and downstream tasks. Supervised pretraining, metric learning with triplet loss, and self-supervised contrastive methods (SimCLR) each offer powerful ways to learn useful features. The shift toward self-supervised methods promises to dramatically reduce the need for labeled data.',
+    conclusionRu: 'Обучение представлений связывает сырые данные и целевые задачи. Предобучение с учителем, обучение метрик с триплетными потерями и самообучение контрастными методами (SimCLR) — каждый предлагает мощный способ извлечения полезных признаков. Переход к методам самообучения обещает значительно снизить потребность в размеченных данных.',
+    references: [
+      { title: 'A Simple Framework for Contrastive Learning of Visual Representations', authors: 'Chen et al., 2020', url: 'https://arxiv.org/abs/2002.05709' },
+      { title: 'FaceNet: A Unified Embedding for Face Recognition', authors: 'Schroff et al., 2015', url: 'https://arxiv.org/abs/1503.03832' },
+      { title: 'Обучение представлений (Хендбук Яндекса по ML)', authors: 'Яндекс Практикум', url: 'https://education.yandex.ru/handbook/ml/article/obuchenie-predstavlenij' },
+    ],
+  },
+
+  /* ---- 39. Weight Initialization ---- */
+  {
+    slug: 'weight-initialization',
+    title: 'Weight Initialization',
+    titleRu: 'Инициализация весов',
+    subtitle: 'Why Starting Point Matters in Deep Learning',
+    subtitleRu: 'Почему начальная точка важна в глубоком обучении',
+    authors: 'Yandex ML Handbook',
+    date: 'June 2026',
+    thumbnail: '/thumbnails/thumbnail-weightinit.svg',
+    sections: [
+      {
+        heading: 'The Zero Initialization Problem',
+        headingRu: 'Проблема нулевой инициализации',
+        blocks: [
+          { type: 'text', html: 'Initializing all weights to zero (or any constant) causes <strong>symmetry breaking failure</strong>: all neurons in a layer compute identical outputs and receive identical gradients, so they never differentiate during training.', htmlRu: 'Инициализация всех весов нулями (или любой константой) приводит к <strong>отказу нарушения симметрии</strong>: все нейроны слоя вычисляют идентичные выходы и получают идентичные градиенты, поэтому они никогда не дифференцируются при обучении.' },
+          { type: 'text', html: 'For a network with at least two layers, if W₁ = 0 then all hidden activations are identical, and during backpropagation the gradient for W₁ is also zero — the network cannot learn.', htmlRu: 'Для сети с как минимум двумя слоями, если W₁ = 0, то все скрытые активации идентичны, и при обратном распространении градиент для W₁ также равен нулю — сеть не может обучаться.' },
+          { type: 'info', variant: 'accent', text: '"The only property known with complete certainty is that the initial parameters need to break symmetry between different units." — Deep Learning Book, Goodfellow et al., p.301', textRu: '«Единственное свойство, известное с полной уверенностью — начальные параметры должны нарушить симметрию между различными единицами.» — Deep Learning Book, Goodfellow et al., стр.301' },
+        ],
+      },
+      {
+        heading: 'Xavier (Glorot) Initialization',
+        headingRu: 'Инициализация Xavier (Glorot)',
+        blocks: [
+          { type: 'text', html: 'When weights come from a distribution with zero mean and variance σ², the variance of a linear layer\'s output scales as <strong>n·σ²·Var(x)</strong> where n is the number of inputs. To preserve variance across layers, we need σ² = 1/n.', htmlRu: 'Когда веса приходят из распределения с нулевым средним и дисперсией σ², дисперсия выхода линейного слоя масштабируется как <strong>n·σ²·Var(x)</strong>, где n — число входов. Чтобы сохранить дисперсию между слоями, нужно σ² = 1/n.' },
+          { type: 'text', html: '<strong>Xavier initialization</strong> considers both forward and backward passes. Since the backward pass scales variance by n_next (the output dimension), the compromise is σ² = 2/(n_in + n_out).', htmlRu: '<strong>Инициализация Xavier</strong> учитывает и прямой, и обратный проход. Поскольку обратный проход масштабирует дисперсию на n_next (размерность выхода), компромисс: σ² = 2/(n_in + n_out).' },
+          { type: 'formula', math: 'W \sim \mathcal{N}\!\left(0,\; \frac{2}{n_{\text{in}} + n_{\text{out}}}\right) \quad \text{or} \quad W \sim U\!\left[-\frac{\sqrt{6}}{\sqrt{n_{\text{in}} + n_{\text{out}}}},\; \frac{\sqrt{6}}{\sqrt{n_{\text{in}} + n_{\text{out}}}}\right]', label: 'Xavier initialization (Gaussian / Uniform)', labelRu: 'Инициализация Xavier (Гауссова / Равномерная)' },
+          { type: 'info', variant: 'emerald', text: 'Xavier initialization is designed for tanh-like symmetric activation functions. It was shown to dramatically improve training of deep feedforward networks in the original 2010 paper by Glorot & Bengio.', textRu: 'Инициализация Xavier разработана для симметричных функций активации типа tanh. Было показано, что она значительно улучшает обучение глубоких полносвязных сетей в оригинальной статье 2010 года Glorot & Bengio.' },
+        ],
+      },
+      {
+        heading: 'Kaiming (He) Initialization',
+        headingRu: 'Инициализация Kaiming (He)',
+        blocks: [
+          { type: 'text', html: 'ReLU activation introduces asymmetry: it zeros out half the values, so the output variance is halved compared to tanh. <strong>Kaiming initialization</strong> accounts for this by doubling the variance.', htmlRu: 'Активация ReLU вносит асимметрию: она обнуляет половину значений, поэтому дисперсия выхода вдвое меньше, чем у tanh. <strong>Инициализация Kaiming</strong> учитывает это, удваивая дисперсию.' },
+          { type: 'formula', math: 'W \sim \mathcal{N}\!\left(0,\; \frac{2}{n_{\text{in}}}\right)', label: 'Kaiming initialization for ReLU', labelRu: 'Инициализация Kaiming для ReLU' },
+          { type: 'text', html: 'This initialization was key to training very deep networks (like ResNets with 150+ layers) and won the ImageNet 2015 competition, surpassing human-level performance for the first time.', htmlRu: 'Эта инициализация стала ключом к обучению очень глубоких сетей (например, ResNet с 150+ слоями) и выиграла соревнование ImageNet 2015, впервые превзойдя уровень человека.' },
+        ],
+      },
+      {
+        heading: 'Practical Guidelines',
+        headingRu: 'Практические рекомендации',
+        blocks: [
+          { type: 'text', html: 'Modern deep learning frameworks provide sensible defaults: PyTorch uses Kaiming uniform for Linear layers, while TensorFlow uses Glorot uniform. However, understanding initialization helps when training custom architectures or debugging convergence issues.', htmlRu: 'Современные фреймворки глубокого обучения предоставляют разумные значения по умолчанию: PyTorch использует Kaiming uniform для слоёв Linear, TensorFlow — Glorot uniform. Однако понимание инициализации помогает при обучении нестандартных архитектур или отладке проблем сходимости.' },
+          { type: 'definition', title: 'Initialization Rule of Thumb', titleRu: 'Правило инициализации', math: '\text{Var}(W) = \begin{cases} \frac{1}{n_{\text{in}}} & \text{linear / identity} \\ \frac{2}{n_{\text{in}} + n_{\text{out}}} & \text{tanh (Xavier)} \\ \frac{2}{n_{\text{in}}} & \text{ReLU (Kaiming)} \end{cases}', note: 'Choose initialization based on your activation function. Using Xavier with ReLU or Kaiming with tanh will result in suboptimal training dynamics.', noteRu: 'Выбирайте инициализацию в зависимости от функции активации. Использование Xavier с ReLU или Kaiming с tanh приведёт к субоптимальной динамике обучения.' },
+          { type: 'info', variant: 'accent', text: 'Key insight: proper initialization preserves the variance of both activations (forward pass) and gradients (backward pass), preventing vanishing or exploding signals in deep networks.', textRu: 'Ключевой инсайт: правильная инициализация сохраняет дисперсию как активаций (прямой проход), так и градиентов (обратный проход), предотвращая затухание или взрыв сигналов в глубоких сетях.' },
+        ],
+      },
+    ],
+    conclusion: 'Weight initialization is a deceptively simple yet critical component of deep learning. From zero-init failure to Xavier for tanh and Kaiming for ReLU, proper initialization ensures that signals propagate effectively through deep networks, enabling successful training from the very first step.',
+    conclusionRu: 'Инициализация весов — обманчиво простой, но критический компонент глубокого обучения. От отказа нулевой инициализации до Xavier для tanh и Kaiming для ReLU — правильная инициализация обеспечивает эффективное распространение сигналов через глубокие сети, позволяя успешное обучение с самого первого шага.',
+    references: [
+      { title: 'Understanding the difficulty of training deep feedforward neural networks', authors: 'Glorot, Bengio, 2010', url: 'https://proceedings.mlr.press/v9/glorot10a.html' },
+      { title: 'Delving Deep into Rectifiers', authors: 'He, Zhang, Ren, Sun, 2015', url: 'https://arxiv.org/abs/1502.01852' },
+      { title: 'Тонкости обучения (Хендбук Яндекса по ML)', authors: 'Яндекс Практикум', url: 'https://education.yandex.ru/handbook/ml/article/tonkosti-obucheniya' },
+    ],
+  },
+
+  /* ---- 40. Backpropagation ---- */
+  {
+    slug: 'backpropagation',
+    title: 'Backpropagation',
+    titleRu: 'Обратное распространение ошибки',
+    subtitle: 'How Neural Networks Compute Gradients Efficiently',
+    subtitleRu: 'Как нейронные сети эффективно вычисляют градиенты',
+    authors: 'Yandex ML Handbook',
+    date: 'June 2026',
+    thumbnail: '/thumbnails/thumbnail-backprop.svg',
+    sections: [
+      {
+        heading: 'The Chain Rule at Scale',
+        headingRu: 'Цепное правило в масштабе',
+        blocks: [
+          { type: 'text', html: 'Backpropagation (proposed in its modern form by Rumelhart, Hinton & Williams in 1986) efficiently computes gradients of a scalar loss with respect to all parameters of a neural network using the <strong>chain rule</strong> in a single backward pass.', htmlRu: 'Обратное распространение ошибки (предложенное в современном виде Румельхартом, Хинтоном и Уильямсом в 1986 году) эффективно вычисляет градиенты скалярной функции потерь по всем параметрам нейронной сети с помощью <strong>цепного правила</strong> за один обратный проход.' },
+          { type: 'formula', math: '\frac{\partial L}{\partial w_i} = \frac{\partial L}{\partial a_n} \cdot \frac{\partial a_n}{\partial a_{n-1}} \cdots \frac{\partial a_{k+1}}{\partial a_k} \cdot \frac{\partial a_k}{\partial w_i}', label: 'Chain rule for gradient computation', labelRu: 'Цепное правило для вычисления градиента' },
+          { type: 'text', html: 'The key insight: gradients flow layer by layer from output to input. At each layer, the incoming gradient is transformed by the layer\'s <strong>adjoint operator</strong> (the transpose of the Jacobian), producing the gradient for the previous layer.', htmlRu: 'Ключевой инсайт: градиенты текут слой за слоем от выхода к входу. На каждом слое входящий градиент преобразуется <strong>сопряжённым оператором</strong> слоя (транспонированным якобианом), производя градиент для предыдущего слоя.' },
+        ],
+      },
+      {
+        heading: 'Forward & Backward Pass',
+        headingRu: 'Прямой и обратный проход',
+        blocks: [
+          { type: 'text', html: '<strong>Step 1 (Forward):</strong> Compute and store all intermediate representations a₁, a₂, ..., aₙ. <strong>Step 2 (Backward):</strong> Starting from ∂L/∂aₙ, propagate gradients backward through each layer, computing ∂L/∂aₖ and ∂L/∂Wₖ.', htmlRu: '<strong>Шаг 1 (Прямой):</strong> Вычислить и сохранить все промежуточные представления a₁, a₂, ..., aₙ. <strong>Шаг 2 (Обратный):</strong> Начиная с ∂L/∂aₙ, распространять градиенты назад через каждый слой, вычисляя ∂L/∂aₖ и ∂L/∂Wₖ.' },
+          { type: 'definition', title: 'Backpropagation Algorithm', titleRu: 'Алгоритм обратного распространения', math: '\nabla_{a_k} L = J_{f_k}^\top \cdot \nabla_{a_{k+1}} L', note: 'J is the Jacobian of layer f_k. The gradient transforms through the adjoint (transpose) of the layer\'s differential. This avoids computing the full Jacobian explicitly.', noteRu: 'J — якобиан слоя f_k. Градиент преобразуется через сопряжённый (транспонированный) дифференциал слоя. Это позволяет избежать явного вычисления полного якобиана.' },
+        ],
+      },
+      {
+        heading: 'Gradient Flow Through Common Layers',
+        headingRu: 'Поток градиента через типичные слои',
+        blocks: [
+          { type: 'text', html: '<strong>Element-wise activation</strong> (ReLU, sigmoid): gradient is multiplied element-wise by σ\'(z). This is why sigmoid/tanh cause vanishing gradients — their derivatives are small.', htmlRu: '<strong>Поэлементная активация</strong> (ReLU, сигмоида): градиент поэлементно умножается на σ\'(z). Поэтому сигмоида/tanh вызывают затухание градиентов — их производные малы.' },
+          { type: 'formula', math: '\nabla_{z} L = \sigma\'(z) \odot \nabla_{a} L', label: 'Gradient through activation function', labelRu: 'Градиент через функцию активации' },
+          { type: 'text', html: '<strong>Linear layer</strong> y = Wx: the gradient for weights is ∂L/∂W = (∂L/∂y)·xᵀ, and the gradient for inputs is ∂L/∂x = Wᵀ·(∂L/∂y).', htmlRu: '<strong>Линейный слой</strong> y = Wx: градиент для весов ∂L/∂W = (∂L/∂y)·xᵀ, градиент для входов ∂L/∂x = Wᵀ·(∂L/∂y).' },
+          { type: 'text', html: '<strong>Softmax + Cross-Entropy</strong>: the combined gradient simplifies elegantly to (predicted_probabilities − true_labels), avoiding numerical instability of computing each separately.', htmlRu: '<strong>Softmax + кросс-энтропия</strong>: комбинированный градиент элегантно упрощается до (предсказанные_вероятности − истинные_метки), избегая численной нестабильности раздельного вычисления.' },
+        ],
+      },
+      {
+        heading: 'Autograd & Modern Frameworks',
+        headingRu: 'Autograd и современные фреймворки',
+        blocks: [
+          { type: 'text', html: 'Modern frameworks (PyTorch, TensorFlow, JAX) implement <strong>automatic differentiation</strong> (autograd). Each layer only needs to implement its own forward and backward pass — the framework chains them automatically through a computational graph.', htmlRu: 'Современные фреймворки (PyTorch, TensorFlow, JAX) реализуют <strong>автоматическое дифференцирование</strong> (autograd). Каждый слой реализует только свой прямой и обратный проход — фреймворк автоматически связывает их через вычислительный граф.' },
+          { type: 'text', html: 'This modular design means you can think about the forward pass (how data transforms) and let the library handle differentiation. The computational graph is built dynamically (PyTorch) or statically (TensorFlow/XLA) during the forward pass.', htmlRu: 'Эта модульная архитектура позволяет думать о прямом проходе (как данные преобразуются) и предоставить библиотеке обработку дифференцирования. Вычислительный граф строится динамически (PyTorch) или статически (TensorFlow/XLA) во время прямого прохода.' },
+          { type: 'info', variant: 'emerald', text: 'Backpropagation makes neural networks practical: each layer is a self-contained module that knows how to compute forward pass and backward gradients. Layers are assembled like building blocks, and autograd chains everything together.', textRu: 'Обратное распространение делает нейронные сети практичными: каждый слой — самодостаточный модуль, знающий прямой проход и обратные градиенты. Слои собираются как строительные блоки, а autograd связывает всё вместе.' },
+        ],
+      },
+    ],
+    conclusion: 'Backpropagation is the algorithm that makes deep learning possible. By applying the chain rule layer by layer, it computes exact gradients in O(n) time where n is the number of layers. Combined with autograd in modern frameworks, it enables rapid experimentation with complex architectures.',
+    conclusionRu: 'Обратное распространение ошибки — алгоритм, делающий глубокое обучение возможным. Применяя цепное правило слой за слоем, он вычисляет точные градиенты за O(n) времени, где n — число слоёв. В сочетании с autograd в современных фреймворках он позволяет быстро экспериментировать со сложными архитектурами.',
+    references: [
+      { title: 'Learning representations by back-propagating errors', authors: 'Rumelhart, Hinton, Williams, 1986', url: 'https://www.nature.com/articles/323533a0' },
+      { title: 'Метод обратного распространения ошибки (Хендбук Яндекса по ML)', authors: 'Яндекс Практикум', url: 'https://education.yandex.ru/handbook/ml/article/metod-obratnogo-rasprostraneniya-oshibki' },
+    ],
+  },
+
 ]
 
 /** Lookup helper */
